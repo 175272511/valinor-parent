@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans        
+    http://www.springframework.org/schema/beans/spring-beans.xsd        
+    http://code.alibabatech.com/schema/dubbo        
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="apiserver" />
+	<!-- 使用multicast广播注册中心暴露发现服务地址 -->
+	<!-- <dubbo:registry address="multicast://224.5.6.7:1234" /> -->
+	<dubbo:registry address="${dubbo.registry.address}" />
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+	
+    <!--笔记模块start-->
+    <dubbo:reference id="dubboReportService" interface="com.ninesale.valinor.note.api.service.DubboReportService" timeout="5000" check="false"/>
+    <dubbo:reference id="dubboTopicService" interface="com.ninesale.valinor.note.api.service.DubboTopicService" timeout="5000" check="false"/>
+    <!--笔记模块 end-->
+	<!--鉴权start-->
+	<dubbo:reference id="dubboAuthService" interface="com.ninesale.valinor.auth.api.service.DubboAuthService" timeout="5000" check="false"/>
+	<dubbo:reference id="dubboPermissionService" interface="com.ninesale.valinor.auth.api.service.DubboPermissionService" timeout="5000" check="false"/>
+	<dubbo:reference id="dubboRoleService" interface="com.ninesale.valinor.auth.api.service.DubboRoleService" timeout="5000" check="false"/>
+	<dubbo:reference id="dubboOpenService" interface="com.ninesale.valinor.auth.api.service.DubboOpenService" timeout="5000" check="false"/>
+	<!--鉴权end-->
+	<!-- 用户start -->
+	<dubbo:reference id="dubboUserService" interface="com.ninesale.valinor.userinfo.api.service.DubboUserService" timeout="5000" check="false"/>	
+	<!-- 用户end -->
+
+	<!--图片管理服务start-->
+	<dubbo:reference id="dubboImgUploadService" interface="com.ninesale.valinor.image.api.service.DubboImgUploadService" timeout="5000" check="false"/>	
+	<dubbo:reference id="dubboImgService" interface="com.ninesale.valinor.image.api.service.DubboImgService" timeout="5000" check="false"/>
+	<!--图片管理服务end-->
+	
+	<!--公共基础数据管理服务start-->
+    <dubbo:reference id="dubboBaseinfoBrandService" interface="com.ninesale.valinor.baseinfo.api.service.DubboBaseinfoBrandService" timeout="5000" check="false"/>
+    <dubbo:reference id="dubboBaseinfoCategService" interface="com.ninesale.valinor.baseinfo.api.service.DubboBaseinfoCategService" timeout="5000" check="false"/>
+    <dubbo:reference id="dubboBaseinfoCountryService" interface="com.ninesale.valinor.baseinfo.api.service.DubboBaseinfoCountryService" timeout="5000" check="false"/>	
+	<!--公共基础数据管理服务end-->
+	
+	<!--商品模块start-->
+    <dubbo:reference id="dubboItemService" interface="com.ninesale.valinor.item.api.service.DubboItemService" timeout="5000" check="false"/>	
+    <!--商品模块 end-->
+    
+</beans>

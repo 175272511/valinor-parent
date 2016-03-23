@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.image.provider.dao.ImgStoreMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.image.provider.model.DtoImgStore" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="typeId" property="typeId" jdbcType="BIGINT" />
+    <result column="manageUrl" property="manageUrl" jdbcType="VARCHAR" />
+    <result column="downloadUrl" property="downloadUrl" jdbcType="VARCHAR" />
+    <result column="fileId" property="fileId" jdbcType="VARCHAR" />
+    <result column="imageText" property="imageText" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="QueryImgStoreTypeMap" type="com.ninesale.valinor.image.provider.model.DtoImgStoreType" >
+	    <id column="id" property="id" jdbcType="BIGINT" />
+	    <result column="manageUrl" property="manageUrl" jdbcType="VARCHAR" />
+	    <result column="downloadUrl" property="downloadUrl" jdbcType="VARCHAR" />
+	    <result column="fileId" property="fileId" jdbcType="VARCHAR" />
+	    <result column="imageText" property="imageText" jdbcType="VARCHAR" />
+	    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	    <association property="dtoImgType" column="type_id" javaType="com.ninesale.valinor.image.provider.model.DtoImgType">  
+	    	<id column="type_id" property="id" jdbcType="BIGINT" />
+		    <result column="typeDesc" property="typeDesc" jdbcType="VARCHAR" />
+		    <result column="remark" property="remark" jdbcType="VARCHAR" />
+		    <result column="type_createTime" property="createTime" jdbcType="TIMESTAMP" />
+		    <result column="type_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	    </association>
+  </resultMap>
+  
+  <resultMap id="QueryImgLocationListMap" type="com.ninesale.valinor.image.provider.model.DtoImgStoreTypeLocation" >
+	    <id column="id" property="id" jdbcType="BIGINT" />
+	    <result column="typeId" property="typeId" jdbcType="BIGINT" />
+	    <result column="manageUrl" property="manageUrl" jdbcType="VARCHAR" />
+	    <result column="downloadUrl" property="downloadUrl" jdbcType="VARCHAR" />
+	    <result column="fileId" property="fileId" jdbcType="VARCHAR" />
+	    <result column="imageText" property="imageText" jdbcType="VARCHAR" />
+	    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	    <association property="imgType" column="type_id" javaType="com.ninesale.valinor.image.provider.model.DtoImgType">  
+	    	<id column="type_id" property="id" jdbcType="BIGINT" />
+		    <result column="typeDesc" property="typeDesc" jdbcType="VARCHAR" />
+		    <result column="remark" property="remark" jdbcType="VARCHAR" />
+		    <result column="type_createTime" property="createTime" jdbcType="TIMESTAMP" />
+		    <result column="type_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	    </association>
+	    <collection property="imgTagGroupList" column="imgId" ofType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+			<id column="local_id" property="id" jdbcType="BIGINT" />
+			<result column="imgId" property="imgId" jdbcType="BIGINT" />
+			<result column="imgTagIdListStr" property="imgTagIdListStr" jdbcType="VARCHAR" />
+			<result column="imgTagNameListStr" property="imgTagNameListStr" jdbcType="VARCHAR" />
+			<result column="coordX" property="coordX" jdbcType="INTEGER" />
+			<result column="coordY" property="coordY" jdbcType="INTEGER" />
+			<result column="showWay" property="showWay" jdbcType="INTEGER" />
+			<result column="local_createTime" property="createTime" jdbcType="TIMESTAMP" />
+			<result column="local_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+		</collection>
+  </resultMap>
+  
+  <sql id="imgStoreBaseColumnList" >
+    id, typeId, manageUrl, downloadUrl, fileId, imageText, createTime, updateTime
+  </sql>
+  
+  <select id="queryImgLocationList" resultMap="QueryImgLocationListMap">
+	    SELECT
+			img.id,
+			img.typeId,
+			img.manageUrl,
+			img.downloadUrl,
+			img.fileId,
+			img.imageText,
+			img.createTime,
+			img.updateTime,
+			it.id AS type_id,
+			it.typeDesc,
+			it.remark,
+			it.createTime AS type_createTime,
+			it.updateTime AS type_updateTime,
+			tl.id AS local_id,
+			tl.imgId,
+			tl.imgTagIdListStr,
+			tl.imgTagNameListStr,
+			tl.coordX,
+			tl.coordY,
+			tl.showWay,
+			tl.createTime AS local_createTime,
+			tl.updateTime AS local_updateTime
+		FROM
+			t_img_store img
+		LEFT OUTER JOIN t_img_type it ON img.typeId = it.id
+		LEFT OUTER JOIN t_img_tag_location tl ON img.id = tl.imgId
+		where img.id in
+	    <foreach collection="list" item="id" open="(" separator="," close=")"> 
+	    	#{id}
+	    </foreach>
+	    ORDER BY
+			img.id DESC
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="imgStoreBaseColumnList" />
+    from t_img_store
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="queryImgStoreList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.image.provider.model.DtoImgStore">
+  		select 
+	    <include refid="imgStoreBaseColumnList" />
+	    from t_img_store 
+	    <where>
+	    	<if test="manageUrl != null and manageUrl != ''">
+	    		manageUrl = #{manageUrl}
+	    	</if>
+	    	<if test="downloadUrl != null and downloadUrl != ''">
+	    		and downloadUrl = #{downloadUrl}
+	    	</if>
+	    	<if test="fileId != null and fileId != ''">
+	    		and fileId = #{fileId}
+	    	</if>
+	    </where>
+  </select>
+  
+  <select id="queryImgStoreTypeList" resultMap="QueryImgStoreTypeMap">
+  		SELECT
+			st.id,
+			st.manageUrl,
+			st.downloadUrl,
+			st.fileId,
+			st.imageText,
+			st.createTime,
+			st.updateTime,
+			tp.id AS type_id,
+			tp.typeDesc,
+			tp.remark,
+			tp.createTime AS type_createTime,
+			tp.updateTime AS type_updateTime
+		FROM
+			t_img_store st
+		LEFT OUTER JOIN t_img_type tp ON st.typeId = tp.id
+		where st.id in
+	    <foreach collection="list" item="id" open="(" separator="," close=")"> 
+	    	#{id}
+	    </foreach>
+	    ORDER BY st.id DESC 
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_img_store
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteImgStoreByIds">
+  		delete from t_img_store where id in
+  		<foreach collection="list" item="id" open="(" separator="," close=")"> 
+	    	#{id}
+	    </foreach> 
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.image.provider.model.DtoImgStore" keyProperty="id" useGeneratedKeys="true">
+    insert into t_img_store (id, typeId, manageUrl, 
+      downloadUrl, fileId, imageText, 
+      createTime, updateTime)
+    values (#{id,jdbcType=BIGINT}, #{typeId,jdbcType=BIGINT}, #{manageUrl,jdbcType=VARCHAR}, 
+      #{downloadUrl,jdbcType=VARCHAR}, #{fileId,jdbcType=VARCHAR}, #{imageText,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.image.provider.model.DtoImgStore" >
+    insert into t_img_store
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="typeId != null" >
+        typeId,
+      </if>
+      <if test="manageUrl != null" >
+        manageUrl,
+      </if>
+      <if test="downloadUrl != null" >
+        downloadUrl,
+      </if>
+      <if test="fileId != null" >
+        fileId,
+      </if>
+      <if test="imageText != null" >
+        imageText,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=BIGINT},
+      </if>
+      <if test="manageUrl != null" >
+        #{manageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="downloadUrl != null" >
+        #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null" >
+        #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="imageText != null" >
+        #{imageText,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.image.provider.model.DtoImgStore" >
+    update t_img_store
+    <set >
+      <if test="typeId != null" >
+        typeId = #{typeId,jdbcType=BIGINT},
+      </if>
+      <if test="manageUrl != null" >
+        manageUrl = #{manageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="downloadUrl != null" >
+        downloadUrl = #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileId != null" >
+        fileId = #{fileId,jdbcType=VARCHAR},
+      </if>
+      <if test="imageText != null" >
+        imageText = #{imageText,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.image.provider.model.DtoImgStore" >
+    update t_img_store
+    set typeId = #{typeId,jdbcType=BIGINT},
+      manageUrl = #{manageUrl,jdbcType=VARCHAR},
+      downloadUrl = #{downloadUrl,jdbcType=VARCHAR},
+      fileId = #{fileId,jdbcType=VARCHAR},
+      imageText = #{imageText,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

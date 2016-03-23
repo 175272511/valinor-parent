@@ -1,0 +1,86 @@
+<!-- /*
+	Powered By: 摘星
+	Edit By: 	sublime 
+	Date: 		2015-5-26
+	QQ: 		273259755
+*/ -->
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<title>登录</title>
+</head>
+<body>
+	
+	<div class="mark" id="loginBox" data-off="keydown">
+		<div class="box">
+			<div class="grayTitle">
+				<span class="text">登录</span>
+			</div>
+			<form class="space" id="formLogin">
+				<table class="align">
+					<tr>
+						<td>用户名：</td>
+						<td>
+							<input type="text" class="form-control" required id="username" value="renrenle">
+						</td>
+					</tr>
+					<tr>
+						<td>密　码：</td>
+						<td>
+							<input type="password" class="form-control" required id="password" value="12345">
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<input type="submit" value="登录" class="btn btn-success">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div><span class="vm"></span>
+	</div>
+	
+	<script src="../js/jq.js"></script>
+	<script src="../js/encrypt/components/core-min.js"></script>
+	<script src="../js/encrypt/rollups/hmac-sha256.js"></script>
+	<script src="../js/encrypt/rollups/sha256.js"></script>
+	<script>
+		$(document).off('keydown');
+
+		$('#formLogin').submit(function(e){
+			alert(1);
+			e.preventDefault();
+			var username=$('#username').val().trim();
+			var password=$('#password').val();
+			var randStr=(''+Math.random()+Math.random()).replace(/\./g,'');
+			password = CryptoJS.HmacSHA256(CryptoJS.SHA256(password).toString().toLowerCase(), randStr).toString().toLowerCase();
+
+			$.postJSON('/cactus/user/login.do', {
+				"username": username,
+				"randomstr": randStr,
+				"password": password,
+				"time": new Date().getTime()
+			}, succ);
+		});
+
+		$.get(basePath+'user/getinfo.do', {}, function(str){
+			var json=JSON.parse(str);
+			if(json.code)return;
+			succ(str);
+		});
+
+		function succ(str){
+			var json=err(str);
+			if(json.code)return;
+			$_COOKIE['g_user']=JSON.stringify(json.data);
+			location='test.html';
+		}
+	</script>
+
+
+
+</body>
+</html>

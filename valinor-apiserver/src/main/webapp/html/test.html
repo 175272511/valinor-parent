@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+<meta charset="UTF-8">
+<title>云聚后台管理系统</title>
+</head>
+<body>
+	<div class="mark" id="loginBox" data-off="keydown">
+		<div class="box">
+
+			<form class="space" id="formLogin">
+				<table class="align">
+					<tr>
+						<td>URL：</td>
+						<td><select class="form-control" required id="urlstr"
+							value="" style="width: 500px;height: 20px;">
+								<option>/user/add.do</option>
+								<option>/user/add1.do</option>
+								<option>/user/add2.do</option>
+								<option>/user/add3.do</option>
+								<option>/user/add4.do</option>
+								<option>/user/add5.do</option>
+								<option>/user/add6.do</option>
+								<option>/user/add7.do</option>
+						</select>
+					</tr>
+					<tr>
+						<td>JSON：</td>
+						<td><textarea type="text" class="form-control" required
+								id="jsonstr" value="" style="width: 500px; height: 300px"></textarea></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" value="调用" class="btn btn-success"></td>
+					</tr>
+					<tr>
+						<td>Result：</td>
+						<td><textarea type="text" class="form-control" 
+								id="result" value="" style="width: 500px; height: 200px"></textarea></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<span class="vm"></span>
+	</div>
+	<script src="../js/jq.js"></script>
+	<script src="../js/encrypt/components/core-min.js"></script>
+	<script src="../js/encrypt/rollups/hmac-sha256.js"></script>
+	<script src="../js/encrypt/rollups/sha256.js"></script>
+	<script>
+		$(document).off('keydown');
+		$('#formLogin').submit(function(e) {
+			alert(1);
+			e.preventDefault();
+			var url = $('#urlstr').val().trim();
+			var json = $('#jsonstr').val();
+			var jsonObj = JSON.parse(json);
+			$.postJSON(basePath + url, jsonObj, succ);
+		});
+
+		function succ(str) {
+			err(str);
+			$('#result').val(str);
+			alert(str);
+		}
+	</script>
+</body>
+</html>

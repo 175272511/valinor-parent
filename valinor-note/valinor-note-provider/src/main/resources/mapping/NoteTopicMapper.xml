@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.note.provider.dao.NoteTopicMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.note.provider.model.DtoNoteTopic" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="topicName" property="topicName" jdbcType="VARCHAR" />
+    <result column="topicDes" property="topicDes" jdbcType="VARCHAR" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, topicName, topicDes, validFlag, modifyUserId, modifyUserName, createTime, updateTime
+  </sql>
+  
+   <select id="queryTopicByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_note_topic
+		<where>
+			<if test="topic.topicName != null and topic.topicName != ''">
+				topicName like CONCAT("%",#{topic.topicName,jdbcType=VARCHAR},"%")
+			</if>
+		</where>	
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfTopic" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteTopic" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_note_topic
+   		<where>
+   			<if test="topicName != null and topicName != ''">
+				topicName like CONCAT("%",#{topicName,jdbcType=VARCHAR},"%")
+			</if>
+		</where>
+    </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_note_topic
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_note_topic
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteTopic" keyProperty="id" useGeneratedKeys="true">
+    insert into t_note_topic (topicName, topicDes, 
+      validFlag, modifyUserId, modifyUserName, 
+      createTime, updateTime)
+    values (#{topicName,jdbcType=VARCHAR}, #{topicDes,jdbcType=VARCHAR}, 
+      #{validFlag,jdbcType=INTEGER}, #{modifyUserId,jdbcType=BIGINT}, #{modifyUserName,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteTopic" >
+    insert into t_note_topic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="topicName != null" >
+        topicName,
+      </if>
+      <if test="topicDes != null" >
+        topicDes,
+      </if>
+      <if test="validFlag != null" >
+        validFlag,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="topicName != null" >
+        #{topicName,jdbcType=VARCHAR},
+      </if>
+      <if test="topicDes != null" >
+        #{topicDes,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteTopic" >
+    update t_note_topic
+    <set >
+      <if test="topicName != null" >
+        topicName = #{topicName,jdbcType=VARCHAR},
+      </if>
+      <if test="topicDes != null" >
+        topicDes = #{topicDes,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        validFlag = #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteTopic" >
+    update t_note_topic
+    set topicName = #{topicName,jdbcType=VARCHAR},
+      topicDes = #{topicDes,jdbcType=VARCHAR},
+      validFlag = #{validFlag,jdbcType=INTEGER},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

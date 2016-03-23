@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.note.provider.dao.NoteReportMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.note.provider.model.DtoNoteReport" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="reportedId" property="reportedId" jdbcType="BIGINT" />
+    <result column="reportedName" property="reportedName" jdbcType="VARCHAR" />
+    <result column="publisherId" property="publisherId" jdbcType="BIGINT" />
+    <result column="publisherName" property="publisherName" jdbcType="VARCHAR" />
+    <result column="reportContent" property="reportContent" jdbcType="VARCHAR" />
+    <result column="reportProductType" property="reportProductType" jdbcType="INTEGER" />
+    <result column="productId" property="productId" jdbcType="BIGINT" />
+    <result column="productTitle" property="productTitle" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, reportedId, reportedName, publisherId, publisherName, reportContent, reportProductType, 
+    productId, productTitle, createTime, updateTime
+  </sql>
+  
+  <select id="queryReportByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_note_report
+		<where>
+			<if test="report.reportContent != null and report.reportContent != ''">
+				(
+				reportedName like CONCAT("%",#{report.reportContent,jdbcType=VARCHAR},"%")
+				or 
+				publisherName like CONCAT("%",#{report.reportContent,jdbcType=VARCHAR},"%")
+				or 
+				reportContent like CONCAT("%",#{report.reportContent,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfReport" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteReport" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_note_report
+   		<where>
+   			<if test="reportContent != null and reportContent != ''">
+				(
+				reportedName like CONCAT("%",#{reportContent,jdbcType=VARCHAR},"%")
+				or 
+				publisherName like CONCAT("%",#{reportContent,jdbcType=VARCHAR},"%")
+				or 
+				reportContent like CONCAT("%",#{reportContent,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>
+    </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_note_report
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_note_report
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteReport" keyProperty="id" useGeneratedKeys="true">
+    insert into t_note_report (reportedId, reportedName, 
+      publisherId, publisherName, reportContent, 
+      reportProductType, productId, productTitle, 
+      createTime, updateTime)
+    values (#{reportedId,jdbcType=BIGINT}, #{reportedName,jdbcType=VARCHAR}, 
+      #{publisherId,jdbcType=BIGINT}, #{publisherName,jdbcType=VARCHAR}, #{reportContent,jdbcType=VARCHAR}, 
+      #{reportProductType,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, #{productTitle,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteReport" >
+    insert into t_note_report
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="reportedId != null" >
+        reportedId,
+      </if>
+      <if test="reportedName != null" >
+        reportedName,
+      </if>
+      <if test="publisherId != null" >
+        publisherId,
+      </if>
+      <if test="publisherName != null" >
+        publisherName,
+      </if>
+      <if test="reportContent != null" >
+        reportContent,
+      </if>
+      <if test="reportProductType != null" >
+        reportProductType,
+      </if>
+      <if test="productId != null" >
+        productId,
+      </if>
+      <if test="productTitle != null" >
+        productTitle,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="reportedId != null" >
+        #{reportedId,jdbcType=BIGINT},
+      </if>
+      <if test="reportedName != null" >
+        #{reportedName,jdbcType=VARCHAR},
+      </if>
+      <if test="publisherId != null" >
+        #{publisherId,jdbcType=BIGINT},
+      </if>
+      <if test="publisherName != null" >
+        #{publisherName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportContent != null" >
+        #{reportContent,jdbcType=VARCHAR},
+      </if>
+      <if test="reportProductType != null" >
+        #{reportProductType,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productTitle != null" >
+        #{productTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteReport" >
+    update t_note_report
+    <set >
+      <if test="reportedId != null" >
+        reportedId = #{reportedId,jdbcType=BIGINT},
+      </if>
+      <if test="reportedName != null" >
+        reportedName = #{reportedName,jdbcType=VARCHAR},
+      </if>
+      <if test="publisherId != null" >
+        publisherId = #{publisherId,jdbcType=BIGINT},
+      </if>
+      <if test="publisherName != null" >
+        publisherName = #{publisherName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportContent != null" >
+        reportContent = #{reportContent,jdbcType=VARCHAR},
+      </if>
+      <if test="reportProductType != null" >
+        reportProductType = #{reportProductType,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        productId = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productTitle != null" >
+        productTitle = #{productTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.note.provider.model.DtoNoteReport" >
+    update t_note_report
+    set reportedId = #{reportedId,jdbcType=BIGINT},
+      reportedName = #{reportedName,jdbcType=VARCHAR},
+      publisherId = #{publisherId,jdbcType=BIGINT},
+      publisherName = #{publisherName,jdbcType=VARCHAR},
+      reportContent = #{reportContent,jdbcType=VARCHAR},
+      reportProductType = #{reportProductType,jdbcType=INTEGER},
+      productId = #{productId,jdbcType=BIGINT},
+      productTitle = #{productTitle,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.auth.provider.dao.AuthMapper">
+
+	<sql id="Base_Column_List">
+		id, roleId, username, password, status, createTime
+	</sql>
+	<select id="getUserByModel" resultType="com.ninesale.valinor.auth.api.model.User">
+		SELECT
+			u.id,	
+			u.userType,
+			u.roleId,
+			u.username,
+			u.password,
+			u.sex,
+			u.nickname,
+			u.phone,
+			u.email,
+			u.address,
+			u.remark,
+			u.userImg,
+			u.status,
+			r.roleName,
+			u.createTime,
+			u.updateTime
+		FROM t_auth_user u 
+		INNER JOIN t_auth_role r
+		ON u.roleId = r.id
+		<where>
+			<if test="id != null">
+				u.id = #{id}
+			</if>
+			<if test="username != null">
+				u.username = #{username} or u.phone = #{username}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	<select id="selectByPrimaryKey" resultType="com.ninesale.valinor.auth.api.model.User"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_auth_user
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_auth_user
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insertUser" parameterType="com.ninesale.valinor.auth.provider.model.DtoUser" useGeneratedKeys="true" keyProperty="id" >
+		INSERT INTO t_auth_user 
+		(
+			id,
+			userType,
+			roleId, 
+			username, 
+			password,
+			phone,
+			createTime
+		)
+		VALUES
+		(
+			#{id,jdbcType=INTEGER},
+			#{userType,jdbcType=INTEGER},
+			#{roleId,jdbcType=INTEGER},
+			#{username,jdbcType=VARCHAR},
+			#{password,jdbcType=VARCHAR},
+			#{phone,jdbcType=VARCHAR},
+			now()
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.auth.api.model.User">
+		insert into t_auth_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=CHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.auth.api.model.User">
+		UPDATE t_auth_user
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=CHAR},
+			</if>
+			<if test="roleId != null">
+				roleId = #{roleId,jdbcType=CHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex},
+			</if>
+			<if test="nickname != null">
+				nickname = #{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="userImg != null">
+				userImg = #{userImg,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.auth.api.model.User">
+		UPDATE t_auth_user
+		SET
+		username = #{username,jdbcType=VARCHAR},
+		password = #{password,jdbcType=CHAR},
+		status = #{status,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP}
+		WHERE id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<!-- 用户登录验证查询 -->
+	<select id="authentication" resultType="com.ninesale.valinor.auth.api.model.User"
+		parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from t_auth_user
+		where username = #{record.username,jdbcType=VARCHAR}
+		 or phone = #{record.username,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="getUserListByParentIdWithPage" resultType="com.ninesale.valinor.auth.api.model.User" parameterType="map">
+		SELECT
+			m.id,
+			m.roleId,
+			m.username,
+			m.password,
+			m.status,
+			m.createTime,			
+			n.roleName
+		FROM t_auth_user m
+		INNER JOIN t_auth_role n
+			ON m.roleId = n.id
+			WHERE 1 = 1
+		<if test="user.username != null">
+			and m.username LIKE CONCAT(CONCAT("%",#{user.username}),"%")
+		</if>
+		<if test="user.userType != null">
+			and m.userType = #{user.userType}
+		</if>
+		ORDER by m.id DESC
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>		
+	</select>
+	
+	<select id="getUserCountByParentId" resultType="java.lang.Long"
+		parameterType="map">
+		SELECT COUNT(*) FROM t_auth_user m
+		INNER JOIN t_auth_role n
+			ON m.roleId = n.id
+			WHERE 1 = 1
+			<if test="user.username != null">
+				and m.username LIKE CONCAT(CONCAT("%",#{user.username}),"%")
+			</if>
+			<if test="user.userType != null">
+				and m.userType = #{user.userType}
+			</if>
+	</select>
+	
+	<select id="getWeixinUser" resultType="com.ninesale.valinor.auth.api.model.WeixinUser">
+		SELECT `id`,`userId`,`openId`,`createTime` From t_auth_openid
+		<where>
+			<if test="userId != null">
+				userId = #{userId}
+			</if>
+			<if test="openId != null">
+				openId = #{openId}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addOpenId" parameterType="com.ninesale.valinor.auth.api.model.WeixinUser">
+		INSERT INTO t_auth_openid 
+		(`userId`,`openId`, `openType`)
+		VALUES
+		(
+			#{userId},
+			#{openId},
+			#{openType}
+		)		
+	</insert>
+	
+	<delete id="delWeixinUser" parameterType="com.ninesale.valinor.auth.api.model.WeixinUser">
+		DELETE FROM t_auth_openid
+		<where>
+			<if test="userId != null">
+				userId = #{userId}
+			</if>
+			<if test="openId != null">
+				openId = #{openId}
+			</if>
+			<if test="openType != null">
+				openType = #{openType}
+			</if>
+		</where>
+	</delete>
+	
+	<insert id="addContactInfo" parameterType="java.lang.String">
+		INSERT INTO t_usercontact 
+		(
+			contactInfo
+		)
+		VALUES
+		(
+			#{contactInfo,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<delete id="deleteUserRole" parameterType="long">
+		DELETE FROM t_auth_user_role WHERE userId = #{userId};
+	</delete>
+	
+	 <insert id="replaceContacts" parameterType="com.ninesale.valinor.auth.api.model.request.DubboConstactsRequest">
+	 	REPLACE INTO t_auth_contacts (
+		lookup,
+		userId,
+		username,
+		phone,
+		createTime
+		)
+		VALUES
+		<foreach collection="contacts" index="index" item="item" separator=",">
+			(
+				#{item.lookup},
+				#{userId},
+				#{item.username},
+				#{item.phone},
+				NOW()
+			)
+		</foreach>
+	 </insert>
+  
+  <select id="getContacts" parameterType="string" resultType="com.ninesale.valinor.auth.api.model.DtoContacts">
+  	SELECT
+		tac.lookup,
+		tac.username,
+		tac.phone,
+		tau.id,
+	  IF (tau.id != NULL, 1, 0) AS `status`
+	FROM
+		t_auth_contacts tac
+	LEFT JOIN t_auth_user tau ON tac.phone = tau.phone
+	WHERE
+		tac.userId = #{userId};
+  </select>
+  
+  <select id="getOpenInfo" resultType="com.ninesale.valinor.auth.api.model.DtoOpenInfo">
+  	SELECT t.userId,t.openType FROM t_auth_openid t WHERE t.userId = #{userId}
+  </select>
+  
+  <select id="getUserListById" resultType="com.ninesale.valinor.auth.api.model.User">
+  	SELECT
+		t.id,
+		t.userType,
+		t.roleId,
+		t.username,
+		t.sex,
+		t.nickname,
+		t.phone,
+		t.email,
+		t.address,
+		t.remark,
+		t.userImg
+	FROM
+		t_auth_user t
+	WHERE
+		t.id IN 
+		<foreach collection="list" index="index" item="userIdList" open="(" close=")" separator=",">
+			#{userIdList}
+		</foreach>
+  </select>
+</mapper>

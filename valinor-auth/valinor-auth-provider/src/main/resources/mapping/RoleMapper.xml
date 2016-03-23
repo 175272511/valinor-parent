@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.auth.provider.dao.RoleMapper">
+
+	<sql id="Base_Column_List">
+		id, roleName, roleSign, desc
+	</sql>
+	<select id="selectByPrimaryKey" resultType="com.ninesale.valinor.auth.api.model.Role"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_auth_role
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_auth_role
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insert" parameterType="com.ninesale.valinor.auth.api.model.Role">
+		insert into t_auth_role (id,
+		roleName, roleSign,
+		desc)
+		values (#{id,jdbcType=BIGINT},
+		#{roleName,jdbcType=VARCHAR},
+		#{roleSign,jdbcType=VARCHAR},
+		#{desc,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.auth.api.model.Role">
+		insert into t_auth_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="roleName != null">
+				roleName,
+			</if>
+			<if test="roleSign != null">
+				roleSign,
+			</if>
+			<if test="desc != null">
+				desc,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="roleName != null">
+				#{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleSign != null">
+				#{roleSign,jdbcType=VARCHAR},
+			</if>
+			<if test="desc != null">
+				#{desc,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.auth.api.model.Role">
+		update t_auth_role
+		<set>
+			<if test="roleName != null">
+				roleName = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="roleSign != null">
+				roleSign = #{roleSign,jdbcType=VARCHAR},
+			</if>
+			<if test="desc != null">
+				desc = #{desc,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.auth.api.model.Role">
+		update t_auth_role
+		set
+		roleName = #{roleName,jdbcType=VARCHAR},
+		roleSign =
+		#{roleSign,jdbcType=VARCHAR},
+		desc =
+		#{desc,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<!-- 通过用户id 查询用户 拥有的角色 -->
+	<select id="getRolesByUserId" resultType="com.ninesale.valinor.auth.api.model.Role" parameterType="java.lang.Long">
+		SELECT r.* FROM t_auth_role r 
+		LEFT JOIN t_auth_user_role 
+		ur ON r.id = ur.roleId
+		WHERE ur.userId = #{id,jdbcType=BIGINT}
+	</select>
+	<insert id="addUserToRoleInfo" parameterType="java.lang.Long">
+		INSERT INTO
+		t_auth_user_role (userId,roleId,createTime) VALUES(#{userId},#{roleId}, now())
+	</insert>
+
+</mapper>

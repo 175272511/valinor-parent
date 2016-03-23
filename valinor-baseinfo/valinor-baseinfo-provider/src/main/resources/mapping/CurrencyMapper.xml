@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.CurrencyMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="currencyName" property="currencyName" jdbcType="VARCHAR" />
+    <result column="currencyCode" property="currencyCode" jdbcType="VARCHAR" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, currencyName, currencyCode, modifyUserId, modifyUserName, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_currency
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryCurrencyList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_currency
+    <where>
+    	<if test="id != null">
+    		id = #{id,jdbcType=BIGINT}
+    	</if> 
+    	<if test="currencyName != null">
+    		and currencyName = #{currencyName,jdbcType=VARCHAR}
+    	</if> 
+    	<if test="currencyCode != null">
+    		and currencyCode = #{currencyCode,jdbcType=VARCHAR}
+    	</if>
+    </where>
+    order by updateTime DESC
+  </select>
+  
+  <select id="queryCurrencyByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_currency
+		<where>
+			<if test="currency.currencyName != null and currency.currencyName != ''">
+				(
+				currencyName like CONCAT("%",#{currency.currencyName,jdbcType=VARCHAR},"%")
+				or 
+				currencyCode like CONCAT("%",#{currency.currencyName,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+		order by updateTime DESC
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfCurrency" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_currency
+   		<where>
+			<if test="currencyName != null and currencyName != ''">
+				(
+				currencyName like CONCAT("%",#{currencyName,jdbcType=VARCHAR},"%")
+				or 
+				currencyCode like CONCAT("%",#{currencyName,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_currency
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" keyProperty="id" useGeneratedKeys="true"> 
+    INSERT INTO t_currency (
+		currencyName,
+		currencyCode,
+		modifyUserId,
+		modifyUserName,
+		createTime,
+		updateTime
+	)
+	VALUES
+	(
+		#{currencyName,jdbcType=VARCHAR}, 
+		#{currencyCode,jdbcType=VARCHAR}, 
+		#{modifyUserId,jdbcType=BIGINT}, 
+		#{modifyUserName,jdbcType=VARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" >
+    insert into t_currency
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="currencyName != null" >
+        currencyName,
+      </if>
+      <if test="currencyCode != null" >
+        currencyCode,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="currencyName != null" >
+        #{currencyName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyCode != null" >
+        #{currencyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" >
+    update t_currency
+    <set >
+      <if test="currencyName != null" >
+        currencyName = #{currencyName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyCode != null" >
+        currencyCode = #{currencyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoCurrency" >
+    update t_currency
+    set currencyName = #{currencyName,jdbcType=VARCHAR},
+      currencyCode = #{currencyCode,jdbcType=VARCHAR},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

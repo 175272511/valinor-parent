@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.image.provider.dao.ImgTagLocationMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="imgId" property="imgId" jdbcType="BIGINT" />
+		<result column="imgTagIdListStr" property="imgTagIdListStr" jdbcType="VARCHAR" />
+		<result column="imgTagNameListStr" property="imgTagNameListStr" jdbcType="VARCHAR" />
+		<result column="coordX" property="coordX" jdbcType="INTEGER" />
+		<result column="coordY" property="coordY" jdbcType="INTEGER" />
+		<result column="showWay" property="showWay" jdbcType="INTEGER" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, imgId, imgTagIdListStr, imgTagNameListStr, coordX, coordY, showWay,
+		createTime, updateTime
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_img_tag_location
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="queryImgTagLocationList" resultMap="BaseResultMap"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+		select
+		<include refid="Base_Column_List" />
+		from t_img_tag_location
+		<where>
+			<if test="id != null">
+				id = #{id,jdbcType=BIGINT}
+			</if>
+			<if test="imgId != null">
+				and imgId = #{imgId,jdbcType=BIGINT
+			</if>
+			<if test="imgTagIdListStr != null and imgTagIdListStr !=''">
+				and imgTagIdListStr = #{imgTagIdListStr,jdbcType=VARCHAR}
+			</if>
+			<if test="imgTagNameListStr != null and imgTagNameListStr !=''">
+				and imgTagNameListStr = #{imgTagNameListStr,jdbcType=VARCHAR}
+			</if>
+			<if test="coordX != null">
+				and coordX = #{coordX,jdbcType=INTEGER}
+			</if>
+			<if test="coordY != null">
+				and coordY = #{coordY,jdbcType=INTEGER}
+			</if>
+			<if test="showWay != null">
+				and showWay = #{showWay,jdbcType=INTEGER}
+			</if>
+			<if test="createTime != null">
+				and createTime = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and updateTime = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_img_tag_location
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteImgTagLocationByImgid" parameterType="java.lang.Long">
+		delete from t_img_tag_location
+		where imgId = #{imgId,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insert"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation"
+		keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO t_img_tag_location (
+		imgId,
+		imgTagIdListStr,
+		imgTagNameListStr,
+		coordX,
+		coordY,
+		showWay,
+		createTime,
+		updateTime
+		)
+		VALUES
+		(
+		#{imgId,jdbcType=BIGINT},
+		#{imgTagIdListStr,jdbcType=VARCHAR},
+		#{imgTagNameListStr,jdbcType=VARCHAR},
+		#{coordX,jdbcType=INTEGER},
+		#{coordY,jdbcType=INTEGER},
+		#{showWay,jdbcType=INTEGER},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+		insert into t_img_tag_location
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="imgId != null">
+				imgId,
+			</if>
+			<if test="imgTagIdListStr != null">
+				imgTagIdListStr,
+			</if>
+			<if test="imgTagNameListStr != null">
+				imgTagNameListStr,
+			</if>
+			<if test="coordX != null">
+				coordX,
+			</if>
+			<if test="coordY != null">
+				coordY,
+			</if>
+			<if test="showWay != null">
+				showWay,
+			</if>
+			<if test="createTime != null">
+				createTime,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="imgId != null">
+				#{imgId,jdbcType=BIGINT},
+			</if>
+			<if test="imgTagIdListStr != null">
+				#{imgTagIdListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="imgTagNameListStr != null">
+				#{imgTagNameListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="coordX != null">
+				#{coordX,jdbcType=INTEGER},
+			</if>
+			<if test="coordY != null">
+				#{coordY,jdbcType=INTEGER},
+			</if>
+			<if test="showWay != null">
+				#{showWay,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+		update t_img_tag_location
+		<set>
+			<if test="imgId != null">
+				imgId = #{imgId,jdbcType=BIGINT},
+			</if>
+			<if test="imgTagIdListStr != null">
+				imgTagIdListStr = #{imgTagIdListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="imgTagNameListStr != null">
+				imgTagNameListStr = #{imgTagNameListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="coordX != null">
+				coordX = #{coordX,jdbcType=INTEGER},
+			</if>
+			<if test="coordY != null">
+				coordY = #{coordY,jdbcType=INTEGER},
+			</if>
+			<if test="showWay != null">
+				showWay = #{showWay,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagLocation">
+		update t_img_tag_location
+		set imgId = #{imgId,jdbcType=BIGINT},
+		imgTagIdListStr = #{imgTagIdListStr,jdbcType=VARCHAR},
+		imgTagNameListStr = #{imgTagNameListStr,jdbcType=VARCHAR},
+		coordX = #{coordX,jdbcType=INTEGER},
+		coordY = #{coordY,jdbcType=INTEGER},
+		showWay = #{showWay,jdbcType=INTEGER},
+		createTime = #{createTime,jdbcType=TIMESTAMP},
+		updateTime = #{updateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

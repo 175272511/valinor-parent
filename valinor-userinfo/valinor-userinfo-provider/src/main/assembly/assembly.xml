@@ -1,0 +1,30 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<!-- zip,tar,tar.gz,tar.bz2,jar,dir,war -->
+		<format>zip</format>
+	</formats>
+	<dependencySets>
+		<!-- 依赖包的输出路径 -->
+		<dependencySet>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+	<!-- 需要打包的文件集 -->
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/valinor/META-INF/assembly/</directory>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>0755</fileMode>
+		</fileSet>	
+		<fileSet>
+			<directory>src/main/resources</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>config.properties</include>
+				<include>logback.xml</include>
+				<include>**/*.*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>

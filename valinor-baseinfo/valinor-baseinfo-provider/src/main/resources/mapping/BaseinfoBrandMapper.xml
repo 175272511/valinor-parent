@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.BaseinfoBrandMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="brandNameCn" property="brandNameCn" jdbcType="VARCHAR" />
+    <result column="brandNameEn" property="brandNameEn" jdbcType="VARCHAR" />
+    <result column="brandNameFull" property="brandNameFull" jdbcType="VARCHAR" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, brandNameCn, brandNameEn, brandNameFull, validFlag, modifyUserId, modifyUserName, 
+    createTime, updateTime
+  </sql>
+  
+  <select id="queryBrandByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_baseinfo_brand
+		<where>
+			<if test="brand.brandNameCn != null and brand.brandNameCn != ''">
+				(
+				brandNameCn like CONCAT("%",#{brand.brandNameCn,jdbcType=VARCHAR},"%")
+				or 
+				brandNameEn like CONCAT("%",#{brand.brandNameCn,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+    <select id="queryTotalNumOfBrand" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_baseinfo_brand
+   		<where>
+   			<if test="brandNameCn != null and brandNameCn != ''">
+				(
+				brandNameCn like CONCAT("%",#{brandNameCn,jdbcType=VARCHAR},"%")
+				or 
+				brandNameEn like CONCAT("%",#{brandNameCn,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>
+   </select>
+  
+  <select id="queryBrandList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_baseinfo_brand
+    <where>
+    	<if test="id != null">
+    		id = #{id,jdbcType=BIGINT}
+    	</if> 
+    	<if test="brandNameCn != null">
+    		and brandNameCn = #{brandNameCn,jdbcType=VARCHAR}
+    	</if> 
+    	<if test="brandNameEn != null">
+    		and brandNameEn = #{brandNameEn,jdbcType=VARCHAR}
+    	</if> 
+    </where>
+    order by updateTime desc
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_baseinfo_brand
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_baseinfo_brand
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" keyProperty="id" useGeneratedKeys="true">
+    INSERT INTO t_baseinfo_brand (
+		brandNameCn,
+		brandNameEn,
+		brandNameFull,
+		validFlag,
+		modifyUserId,
+		modifyUserName,
+		createTime,
+		updateTime
+	)
+	VALUES
+		(
+			#{brandNameCn,jdbcType=VARCHAR}, 
+			#{brandNameEn,jdbcType=VARCHAR}, 
+			#{brandNameFull,jdbcType=VARCHAR}, 
+			#{validFlag,jdbcType=INTEGER}, 
+			#{modifyUserId,jdbcType=BIGINT}, 
+			#{modifyUserName,jdbcType=VARCHAR}, 
+			#{createTime,jdbcType=TIMESTAMP}, 
+			#{updateTime,jdbcType=TIMESTAMP}
+		)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" >
+    insert into t_baseinfo_brand
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="brandNameCn != null" >
+        brandNameCn,
+      </if>
+      <if test="brandNameEn != null" >
+        brandNameEn,
+      </if>
+      <if test="brandNameFull != null" >
+        brandNameFull,
+      </if>
+      <if test="validFlag != null" >
+        validFlag,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="brandNameCn != null" >
+        #{brandNameCn,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNameEn != null" >
+        #{brandNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNameFull != null" >
+        #{brandNameFull,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" >
+    update t_baseinfo_brand
+    <set >
+      <if test="brandNameCn != null" >
+        brandNameCn = #{brandNameCn,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNameEn != null" >
+        brandNameEn = #{brandNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNameFull != null" >
+        brandNameFull = #{brandNameFull,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        validFlag = #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoBrand" >
+    update t_baseinfo_brand
+    set brandNameCn = #{brandNameCn,jdbcType=VARCHAR},
+      brandNameEn = #{brandNameEn,jdbcType=VARCHAR},
+      brandNameFull = #{brandNameFull,jdbcType=VARCHAR},
+      validFlag = #{validFlag,jdbcType=INTEGER},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

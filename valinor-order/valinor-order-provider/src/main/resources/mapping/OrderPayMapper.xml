@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.order.provider.dao.OrderPayMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.order.provider.model.DtoOrderPay" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="orderId" property="orderId" jdbcType="VARCHAR" />
+    <result column="payOrderNo" property="payOrderNo" jdbcType="VARCHAR" />
+    <result column="payType" property="payType" jdbcType="INTEGER" />
+    <result column="payNo" property="payNo" jdbcType="VARCHAR" />
+    <result column="payFee" property="payFee" jdbcType="INTEGER" />
+    <result column="currency" property="currency" jdbcType="VARCHAR" />
+    <result column="payTime" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="expireTime" property="expireTime" jdbcType="TIMESTAMP" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, orderId, payOrderNo, payType, payNo, payFee, currency, payTime, status, expireTime, 
+    createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_pay
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_order_pay
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderPay" >
+    insert into t_order_pay (id, orderId, payOrderNo, 
+      payType, payNo, payFee, 
+      currency, payTime, status, 
+      expireTime, createTime, updateTime
+      )
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{payOrderNo,jdbcType=VARCHAR}, 
+      #{payType,jdbcType=INTEGER}, #{payNo,jdbcType=VARCHAR}, #{payFee,jdbcType=INTEGER}, 
+      #{currency,jdbcType=VARCHAR}, #{payTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{expireTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderPay" >
+    insert into t_order_pay
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        orderId,
+      </if>
+      <if test="payOrderNo != null" >
+        payOrderNo,
+      </if>
+      <if test="payType != null" >
+        payType,
+      </if>
+      <if test="payNo != null" >
+        payNo,
+      </if>
+      <if test="payFee != null" >
+        payFee,
+      </if>
+      <if test="currency != null" >
+        currency,
+      </if>
+      <if test="payTime != null" >
+        payTime,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="expireTime != null" >
+        expireTime,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payOrderNo != null" >
+        #{payOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="payNo != null" >
+        #{payNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payFee != null" >
+        #{payFee,jdbcType=INTEGER},
+      </if>
+      <if test="currency != null" >
+        #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null" >
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="expireTime != null" >
+        #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderPay" >
+    update t_order_pay
+    <set >
+      <if test="orderId != null" >
+        orderId = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payOrderNo != null" >
+        payOrderNo = #{payOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        payType = #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="payNo != null" >
+        payNo = #{payNo,jdbcType=VARCHAR},
+      </if>
+      <if test="payFee != null" >
+        payFee = #{payFee,jdbcType=INTEGER},
+      </if>
+      <if test="currency != null" >
+        currency = #{currency,jdbcType=VARCHAR},
+      </if>
+      <if test="payTime != null" >
+        payTime = #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="expireTime != null" >
+        expireTime = #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderPay" >
+    update t_order_pay
+    set orderId = #{orderId,jdbcType=VARCHAR},
+      payOrderNo = #{payOrderNo,jdbcType=VARCHAR},
+      payType = #{payType,jdbcType=INTEGER},
+      payNo = #{payNo,jdbcType=VARCHAR},
+      payFee = #{payFee,jdbcType=INTEGER},
+      currency = #{currency,jdbcType=VARCHAR},
+      payTime = #{payTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      expireTime = #{expireTime,jdbcType=TIMESTAMP},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

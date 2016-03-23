@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.note.provider.dao.AlbumContentMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="albumId" property="albumId" jdbcType="BIGINT" />
+    <result column="noteId" property="noteId" jdbcType="BIGINT" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, albumId, noteId, createTime, updateTime
+  </sql>
+  
+  <select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_album_content
+	<where>
+		<if test="id != null">
+			id = #{id}
+		</if>
+		<if test="albumId != null">
+			AND albumId = #{albumId} 
+		</if>
+	</where>	
+	order by createTime desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_album_content
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_album_content
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    insert into t_album_content (id, albumId, noteId, 
+      createTime, updateTime)
+    values (#{id,jdbcType=BIGINT}, #{albumId,jdbcType=BIGINT}, #{noteId,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    insert into t_album_content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="albumId != null" >
+        albumId,
+      </if>
+      <if test="noteId != null" >
+        noteId,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="albumId != null" >
+        #{albumId,jdbcType=BIGINT},
+      </if>
+      <if test="noteId != null" >
+        #{noteId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    update t_album_content
+    <set >
+      <if test="albumId != null" >
+        albumId = #{albumId,jdbcType=BIGINT},
+      </if>
+      <if test="noteId != null" >
+        noteId = #{noteId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbumContent" >
+    update t_album_content
+    set albumId = #{albumId,jdbcType=BIGINT},
+      noteId = #{noteId,jdbcType=BIGINT},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

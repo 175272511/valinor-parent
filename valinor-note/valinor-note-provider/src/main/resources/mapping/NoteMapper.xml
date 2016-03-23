@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.note.provider.dao.NoteMapper">
+	<resultMap id="BaseResultMap" type="com.ninesale.valinor.note.provider.model.DtoNote">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="userId" property="userId" jdbcType="BIGINT" />
+		<result column="noteTitle" property="noteTitle" jdbcType="VARCHAR" />
+		<result column="noteContent" property="noteContent" jdbcType="VARCHAR" />
+		<result column="releasePlace" property="releasePlace" jdbcType="VARCHAR" />
+		<result column="imgIdlistStr" property="imgIdlistStr" jdbcType="VARCHAR" />
+		<result column="noteStatus" property="noteStatus" jdbcType="INTEGER" />
+		<result column="noteTagListStr" property="noteTagListStr" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, userId, noteTitle, noteContent, releasePlace, imgIdlistStr, noteTagListStr, noteStatus, createTime, updateTime
+	</sql>
+	<select id="selectByIdList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_note
+		where id in
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_note
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="selectNoteByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_note
+		<where>
+			<if test="note.noteStatus != null">
+				noteStatus = #{note.noteStatus}
+			</if>
+			<if test="note.userId != null">
+				AND userId = #{note.userId}
+			</if>
+		</where>
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+
+	<select id="setTotalNumOfNote" parameterType="com.ninesale.valinor.note.provider.model.DtoNote" resultType="java.lang.Integer">
+		select count(*)
+		from t_note
+		<where>
+			<if test="noteStatus != null">
+				noteStatus = #{noteStatus}
+			</if>
+			<if test="userId != null">
+				AND userId = #{userId}
+			</if>
+		</where>
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_note
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.ninesale.valinor.note.provider.model.DtoNote">
+		insert into t_note (id,
+		userId, noteContent,
+		releasePlace, imgIdlistStr, noteTagListStr,
+		createTime, updateTime)
+		values
+		(#{id,jdbcType=BIGINT},
+		#{userId,jdbcType=VARCHAR},
+		#{noteContent,jdbcType=VARCHAR},
+		#{releasePlace,jdbcType=VARCHAR}, #{imgIdlistStr,jdbcType=VARCHAR},
+		#{noteTagListStr,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNote">
+		<selectKey resultType="java.lang.Long" keyProperty="id">
+			select
+			last_insert_id() as id
+		</selectKey>
+		insert into t_note
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				userId,
+			</if>
+			<if test="noteTitle != null">
+				noteTitle,
+			</if>
+			<if test="noteContent != null">
+				noteContent,
+			</if>
+			<if test="releasePlace != null">
+				releasePlace,
+			</if>
+			<if test="imgIdlistStr != null">
+				imgIdlistStr,
+			</if>
+			<if test="noteTagListStr != null">
+				noteTagListStr,
+			</if>
+			<if test="noteStatus != null">
+				noteStatus,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="noteTitle != null">
+				#{noteTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="noteContent != null">
+				#{noteContent,jdbcType=VARCHAR},
+			</if>
+			<if test="releasePlace != null">
+				#{releasePlace,jdbcType=VARCHAR},
+			</if>
+			<if test="imgIdlistStr != null">
+				#{imgIdlistStr,jdbcType=VARCHAR},
+			</if>
+			<if test="noteTagListStr != null">
+				#{noteTagListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="noteStatus != null">
+				#{noteStatus,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.note.provider.model.DtoNote">
+		update t_note
+		<set>
+			<if test="userId != null">
+				userId = #{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="noteTitle != null">
+				noteTitle = #{noteTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="noteContent != null">
+				noteContent = #{noteContent,jdbcType=VARCHAR},
+			</if>
+			<if test="releasePlace != null">
+				releasePlace = #{releasePlace,jdbcType=VARCHAR},
+			</if>
+			<if test="imgIdlistStr != null">
+				imgIdlistStr = #{imgIdlistStr,jdbcType=VARCHAR},
+			</if>
+			<if test="noteTagListStr != null">
+				noteTagListStr = #{noteTagListStr,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.note.provider.model.DtoNote">
+		update t_note
+		set
+		userId = #{userId,jdbcType=VARCHAR},
+		noteContent =
+		#{noteContent,jdbcType=VARCHAR},
+		releasePlace =
+		#{releasePlace,jdbcType=VARCHAR},
+		imgIdlistStr =
+		#{imgIdlistStr,jdbcType=VARCHAR},
+		noteTagListStr =
+		#{noteTagListStr,jdbcType=VARCHAR},
+		createTime =
+		#{createTime,jdbcType=TIMESTAMP},
+		updateTime =
+		#{updateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

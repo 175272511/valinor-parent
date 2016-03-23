@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.image.provider.dao.ImgTagMapper">
+	<resultMap id="BaseResultMap"
+		type="com.ninesale.valinor.image.provider.model.DtoImgTag">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tagTypeId" property="tagTypeId" jdbcType="BIGINT" />
+		<result column="tagName" property="tagName" jdbcType="VARCHAR" />
+		<result column="tagDesc" property="tagDesc" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<resultMap id="QueryImgTagAndTypeListMap"
+		type="com.ninesale.valinor.image.provider.model.DtoImgTagAndType">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="tagTypeId" property="tagTypeId" jdbcType="BIGINT" />
+		<result column="tagName" property="tagName" jdbcType="VARCHAR" />
+		<result column="tagDesc" property="tagDesc" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+		<association property="imgTagType" column="type_id" javaType="com.ninesale.valinor.image.provider.model.DtoImgTagType"> 
+			<id column="type_id" property="id" jdbcType="BIGINT" /> 
+			<result column="typeName" property="typeName" jdbcType="VARCHAR" />
+			<result column="type_createTime" property="createTime" jdbcType="TIMESTAMP" />
+			<result column="type_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+		</association>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, tagTypeId, tagName, tagDesc, createTime, updateTime
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_img_tag
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="queryImgTag" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_img_tag
+		where tagTypeId = #{0} and tagName = #{1}
+	</select>
+
+	<select id="queryImgTagList" resultMap="BaseResultMap"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTag">
+		select
+		<include refid="Base_Column_List" />
+		from t_img_tag
+		<where>
+			<if test="id != null">
+				id = #{id,jdbcType=BIGINT}
+			</if>
+			<if test="tagTypeId != null">
+				and tagTypeId = #{tagTypeId,jdbcType=BIGINT}
+			</if>
+			<if test="tagName != null and tagName != ''">
+				and tagName like CONCAT("%",#{tagName,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="tagDesc != null and tagDesc != ''">
+				and tagDesc like CONCAT("%",#{tagDesc,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="createTime != null">
+				and createTime = #{createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="updateTime != null">
+				and updateTime = #{updateTime,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryImgTagAndTypeList" resultMap="QueryImgTagAndTypeListMap"
+		parameterType="com.ninesale.valinor.image.provider.model.DtoImgTagAndType">
+		SELECT
+			tag.id,
+			tag.tagTypeId,
+			tag.tagName,
+			tag.tagDesc,
+			tag.createTime,
+			tag.updateTime,
+			type.id as type_id,
+			type.typeName,
+			type.createTime as type_createTime,
+			type.updateTime as type_updateTime
+		FROM
+			t_img_tag tag
+		LEFT OUTER JOIN t_img_tag_type type ON tag.tagTypeId = type.id
+		where tag.id in
+	    <foreach collection="list" item="id" open="(" separator="," close=")"> 
+	    	#{id}
+	    </foreach>
+		order by tag.id desc
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_img_tag
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.ninesale.valinor.image.provider.model.DtoImgTag"
+		keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO t_img_tag (
+		tagTypeId,
+		tagName,
+		tagDesc,
+		createTime,
+		updateTime
+		)
+		VALUES
+		(
+		#{tagTypeId,jdbcType=BIGINT},
+		#{tagName,jdbcType=VARCHAR},
+		#{tagDesc,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.image.provider.model.DtoImgTag">
+		insert into t_img_tag
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="tagTypeId != null">
+				tagTypeId,
+			</if>
+			<if test="tagName != null">
+				tagName,
+			</if>
+			<if test="tagDesc != null">
+				tagDesc,
+			</if>
+			<if test="createTime != null">
+				createTime,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="tagTypeId != null">
+				#{tagTypeId,jdbcType=BIGINT},
+			</if>
+			<if test="tagName != null">
+				#{tagName,jdbcType=VARCHAR},
+			</if>
+			<if test="tagDesc != null">
+				#{tagDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.image.provider.model.DtoImgTag">
+		update t_img_tag
+		<set>
+			<if test="tagTypeId != null">
+				tagTypeId = #{tagTypeId,jdbcType=BIGINT},
+			</if>
+			<if test="tagName != null">
+				tagName = #{tagName,jdbcType=VARCHAR},
+			</if>
+			<if test="tagDesc != null">
+				tagDesc = #{tagDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.image.provider.model.DtoImgTag">
+		update t_img_tag
+		set tagTypeId = #{tagTypeId,jdbcType=BIGINT},
+		tagName = #{tagName,jdbcType=VARCHAR},
+		tagDesc = #{tagDesc,jdbcType=VARCHAR},
+		createTime = #{createTime,jdbcType=TIMESTAMP},
+		updateTime = #{updateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.BaseinfoCountryMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="countryNameCn" property="countryNameCn" jdbcType="VARCHAR" />
+    <result column="countryNameEn" property="countryNameEn" jdbcType="VARCHAR" />
+    <result column="countryCode" property="countryCode" jdbcType="VARCHAR" />
+    <result column="countryDesc" property="countryDesc" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, countryNameCn, countryNameEn, countryCode, countryDesc, createTime, updateTime
+  </sql>
+  <select id="queryCountryByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_baseinfo_country
+		<where>
+			<if test="country.countryNameCn != null and country.countryNameCn != ''">
+				(
+				countryNameCn like CONCAT("%",#{country.countryNameCn,jdbcType=VARCHAR},"%")
+				or 
+				countryNameEn like CONCAT("%",#{country.countryNameCn,jdbcType=VARCHAR},"%")
+				or 
+				countryCode like CONCAT("%",#{country.countryNameCn,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfCountry" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_baseinfo_country
+   		<where>
+			<if test="countryNameCn != null and countryNameCn != ''">
+				(
+				countryNameCn like CONCAT("%",#{countryNameCn,jdbcType=VARCHAR},"%")
+				or 
+				countryNameEn like CONCAT("%",#{countryNameCn,jdbcType=VARCHAR},"%")
+				or 
+				countryCode like CONCAT("%",#{countryNameCn,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_baseinfo_country
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" keyProperty="id" useGeneratedKeys="true">
+    INSERT INTO t_baseinfo_country (
+		countryNameCn,
+		countryNameEn,
+		countryCode,
+		countryDesc,
+		createTime,
+		updateTime
+	)
+	VALUES
+	(
+		#{countryNameCn,jdbcType=VARCHAR}, 
+		#{countryNameEn,jdbcType=VARCHAR}, 
+		#{countryCode,jdbcType=VARCHAR}, 
+		#{countryDesc,jdbcType=VARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" >
+    insert into t_baseinfo_country
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="countryNameCn != null" >
+        countryNameCn,
+      </if>
+      <if test="countryNameEn != null" >
+        countryNameEn,
+      </if>
+      <if test="countryCode != null" >
+        countryCode,
+      </if>
+      <if test="countryDesc != null" >
+        countryDesc,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="countryNameCn != null" >
+        #{countryNameCn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryNameEn != null" >
+        #{countryNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null" >
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryDesc != null" >
+        #{countryDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" >
+    update t_baseinfo_country
+    <set >
+      <if test="countryNameCn != null" >
+        countryNameCn = #{countryNameCn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryNameEn != null" >
+        countryNameEn = #{countryNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCode != null" >
+        countryCode = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countryDesc != null" >
+        countryDesc = #{countryDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" >
+    update t_baseinfo_country
+    set countryNameCn = #{countryNameCn,jdbcType=VARCHAR},
+      countryNameEn = #{countryNameEn,jdbcType=VARCHAR},
+      countryCode = #{countryCode,jdbcType=VARCHAR},
+      countryDesc = #{countryDesc,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

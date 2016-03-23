@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.BaseinfoCategMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="categName" property="categName" jdbcType="VARCHAR" />
+    <result column="categLevel" property="categLevel" jdbcType="INTEGER" />
+    <result column="parentCategId" property="parentCategId" jdbcType="INTEGER" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="QueryAllCategListMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoParentCateg" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="categName" property="categName" jdbcType="VARCHAR" />
+    <result column="categLevel" property="categLevel" jdbcType="INTEGER" />
+    <result column="parentCategId" property="parentCategId" jdbcType="INTEGER" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <collection property="subCateList" ofType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" column="id">   
+    	<id column="sub_id" property="id" jdbcType="INTEGER" />
+	    <result column="sub_categName" property="categName" jdbcType="VARCHAR" />
+	    <result column="sub_categLevel" property="categLevel" jdbcType="INTEGER" />
+	    <result column="sub_parentCategId" property="parentCategId" jdbcType="INTEGER" />
+	    <result column="sub_validFlag" property="validFlag" jdbcType="INTEGER" />
+	    <result column="sub_modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+	    <result column="sub_modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+	    <result column="sub_createTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="sub_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    </collection>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, categName, categLevel, parentCategId, validFlag, modifyUserId, modifyUserName, 
+    createTime, updateTime
+  </sql>
+  
+  <select id="queryAllCategList" resultMap="QueryAllCategListMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+   SELECT
+		c1.id,
+		c1.categName,
+		c1.categLevel,
+		c1.parentCategId,
+		c1.validFlag,
+		c1.modifyUserId,
+		c1.modifyUserName,
+		c1.createTime,
+		c1.updateTime,
+		c2.id AS sub_id,
+		c2.categName AS sub_categName,
+		c2.categLevel AS sub_categLevel,
+		c2.parentCategId AS sub_parentCategId,
+		c2.validFlag AS sub_validFlag,
+		c2.modifyUserId AS sub_modifyUserId,
+		c2.modifyUserName AS sub_modifyUserName,
+		c2.createTime AS sub_createTime,
+		c2.updateTime AS sub_updateTime
+	FROM
+		t_baseinfo_categ c1
+	LEFT OUTER JOIN t_baseinfo_categ c2 ON c1.id = c2.parentCategId
+	WHERE
+		c1.parentCategId = 0
+	   	<if test="id != null">
+	   		and c1.id = #{id,jdbcType=INTEGER}
+	   	</if> 
+	   	<if test="categName != null">
+	   		and c1.categName = #{categName,jdbcType=VARCHAR}
+	   	</if>
+    ORDER BY
+		c1.id ASC
+  </select>
+  
+  <select id="queryCategList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_baseinfo_categ
+    <where>
+    	<if test="id != null">
+    		id = #{id,jdbcType=INTEGER}
+    	</if> 
+    	<if test="categName != null">
+    		and categName = #{categName,jdbcType=VARCHAR}
+    	</if> 
+    	<if test="parentCategId != null">
+    		and parentCategId = #{parentCategId,jdbcType=INTEGER}
+    	</if> 
+    </where>
+    order by updateTime desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_baseinfo_categ
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" keyProperty="id" useGeneratedKeys="true"> 
+   INSERT INTO t_baseinfo_categ (
+		categName,
+		categLevel,
+		parentCategId,
+		validFlag,
+		modifyUserId,
+		modifyUserName,
+		createTime,
+		updateTime
+	)
+	VALUES
+		(
+			#{categName,jdbcType=VARCHAR},
+			#{categLevel,jdbcType=INTEGER}, 
+			#{parentCategId,jdbcType=INTEGER}, 
+			#{validFlag,jdbcType=INTEGER}, 
+			#{modifyUserId,jdbcType=BIGINT}, 
+			#{modifyUserName,jdbcType=VARCHAR}, 
+			#{createTime,jdbcType=TIMESTAMP}, 
+			#{updateTime,jdbcType=TIMESTAMP}
+		)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+    insert into t_baseinfo_categ
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="categName != null" >
+        categName,
+      </if>
+      <if test="categLevel != null" >
+        categLevel,
+      </if>
+      <if test="parentCategId != null" >
+        parentCategId,
+      </if>
+      <if test="validFlag != null" >
+        validFlag,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="categName != null" >
+        #{categName,jdbcType=VARCHAR},
+      </if>
+      <if test="categLevel != null" >
+        #{categLevel,jdbcType=INTEGER},
+      </if>
+      <if test="parentCategId != null" >
+        #{parentCategId,jdbcType=INTEGER},
+      </if>
+      <if test="validFlag != null" >
+        #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+    update t_baseinfo_categ
+    <set >
+      <if test="categName != null" >
+        categName = #{categName,jdbcType=VARCHAR},
+      </if>
+      <if test="categLevel != null" >
+        categLevel = #{categLevel,jdbcType=INTEGER},
+      </if>
+      <if test="parentCategId != null" >
+        parentCategId = #{parentCategId,jdbcType=INTEGER},
+      </if>
+      <if test="validFlag != null" >
+        validFlag = #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCateg" >
+    update t_baseinfo_categ
+    set categName = #{categName,jdbcType=VARCHAR},
+      categLevel = #{categLevel,jdbcType=INTEGER},
+      parentCategId = #{parentCategId,jdbcType=INTEGER},
+      validFlag = #{validFlag,jdbcType=INTEGER},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

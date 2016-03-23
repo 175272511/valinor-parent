@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.AddressTagMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="addrTagName" property="addrTagName" jdbcType="VARCHAR" />
+    <result column="countryCityId" property="countryCityId" jdbcType="BIGINT" />
+    <result column="imgId" property="imgId" jdbcType="BIGINT" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="QueryAddrTagByPageMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoAddress2Tag" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="addrTagName" property="addrTagName" jdbcType="VARCHAR" />
+    <result column="countryCityId" property="countryCityId" jdbcType="BIGINT" />
+    <result column="imgId" property="imgId" jdbcType="BIGINT" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <association property="country" javaType="com.ninesale.valinor.baseinfo.provider.model.DtoBaseinfoCountry" column="c_id"> 
+	    <id column="c_id" property="id" jdbcType="BIGINT" />
+	    <result column="countryNameCn" property="countryNameCn" jdbcType="VARCHAR" />
+	    <result column="countryNameEn" property="countryNameEn" jdbcType="VARCHAR" />
+	    <result column="countryCode" property="countryCode" jdbcType="VARCHAR" />
+	    <result column="countryDesc" property="countryDesc" jdbcType="VARCHAR" />
+	    <result column="c_createTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="c_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, addrTagName, countryCityId, imgId, modifyUserId, modifyUserName, createTime, 
+    updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_address_tag
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryAddrTagList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_address_tag
+    <where>
+    	<if test="id != null">
+    		id = #{id,jdbcType=BIGINT}
+    	</if> 
+    	<if test="countryCityId != null">
+    		and countryCityId = #{countryCityId,jdbcType=BIGINT}
+    	</if> 
+    	<if test="addrTagName != null">
+    		and addrTagName = #{addrTagName,jdbcType=VARCHAR}
+    	</if> 
+    </where>
+    order by updateTime DESC
+  </select>
+  
+  <select id="queryAddrTagByPage" resultMap="QueryAddrTagByPageMap">
+		SELECT
+			a.id,
+			a.addrTagName,
+			a.countryCityId,
+			a.imgId,
+			a.modifyUserId,
+			a.modifyUserName,
+			a.createTime,
+			a.updateTime,
+			c.id as c_id,
+			c.countryNameCn,
+			c.countryNameEn,
+			c.countryCode,
+			c.countryDesc,
+			c.createTime as c_createTime,
+			c.updateTime as c_updateTime
+		FROM
+			t_address_tag a
+		LEFT OUTER JOIN t_baseinfo_country c ON a.countryCityId = c.id
+		<where>
+			<if test="addrTag.addrTagName != null and addrTag.addrTagName != ''">
+				a.addrTagName like CONCAT("%",#{addrTag.addrTagName,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="addrTag.countryCityId != null">
+				and a.countryCityId = #{addrTag.countryCityId,jdbcType=BIGINT}
+			</if>
+		</where>	
+		order by a.updateTime DESC
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfAddrTag" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" resultType="java.lang.Integer">
+	    SELECT
+			count(1)
+		FROM
+			t_address_tag a
+		LEFT OUTER JOIN t_baseinfo_country c ON a.countryCityId = c.id
+		<where>
+			<if test="addrTagName != null and addrTagName != ''">
+				a.addrTagName like CONCAT("%",#{addrTagName,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="countryCityId != null">
+				and a.countryCityId = #{countryCityId,jdbcType=BIGINT}
+			</if>
+		</where>	
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_address_tag
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" keyProperty="id" useGeneratedKeys="true">
+    INSERT INTO t_address_tag (
+		addrTagName,
+		countryCityId,
+		imgId,
+		modifyUserId,
+		modifyUserName,
+		createTime,
+		updateTime
+	)
+	VALUES
+	(
+		#{addrTagName,jdbcType=VARCHAR}, 
+		#{countryCityId,jdbcType=BIGINT}, 
+		#{imgId,jdbcType=BIGINT}, 
+		#{modifyUserId,jdbcType=BIGINT}, 
+		#{modifyUserName,jdbcType=VARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" >
+    insert into t_address_tag
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="addrTagName != null" >
+        addrTagName,
+      </if>
+      <if test="countryCityId != null" >
+        countryCityId,
+      </if>
+      <if test="imgId != null" >
+        imgId,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="addrTagName != null" >
+        #{addrTagName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCityId != null" >
+        #{countryCityId,jdbcType=BIGINT},
+      </if>
+      <if test="imgId != null" >
+        #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" >
+    update t_address_tag
+    <set >
+      <if test="addrTagName != null" >
+        addrTagName = #{addrTagName,jdbcType=VARCHAR},
+      </if>
+      <if test="countryCityId != null" >
+        countryCityId = #{countryCityId,jdbcType=BIGINT},
+      </if>
+      <if test="imgId != null" >
+        imgId = #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoAddressTag" >
+    update t_address_tag
+    set addrTagName = #{addrTagName,jdbcType=VARCHAR},
+      countryCityId = #{countryCityId,jdbcType=BIGINT},
+      imgId = #{imgId,jdbcType=BIGINT},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

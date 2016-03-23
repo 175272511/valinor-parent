@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.note.provider.dao.AlbumMapper">
+	<resultMap id="BaseResultMap" type="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="userId" property="userId" jdbcType="BIGINT" />
+		<result column="albumName" property="albumName" jdbcType="VARCHAR" />
+		<result column="albumDesc" property="albumDesc" jdbcType="VARCHAR" />
+		<result column="albumStatus" property="albumStatus" jdbcType="INTEGER" />
+		<result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, userId, albumName, albumDesc, albumStatus, validFlag, createTime, updateTime
+	</sql>
+
+	<select id="selectBySelective" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		select
+		<include refid="Base_Column_List" />
+		from t_album
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="userId != null">
+				and userId = #{userId}
+			</if>
+			    and validFlag = 0
+		</where>
+		order by createTime desc
+	</select>
+
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_album
+		where id = #{id,jdbcType=BIGINT}
+		and validFlag = 0
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from t_album
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		insert into t_album (id, userId, albumName,
+		albumDesc, albumStatus, createTime,
+		updateTime)
+		values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{albumName,jdbcType=VARCHAR},
+		#{albumDesc,jdbcType=VARCHAR}, #{albumStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		<selectKey resultType="java.lang.Long" keyProperty="id">
+			select last_insert_id() as id
+		</selectKey>
+		insert into t_album
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				userId,
+			</if>
+			<if test="albumName != null">
+				albumName,
+			</if>
+			<if test="albumDesc != null">
+				albumDesc,
+			</if>
+			<if test="albumStatus != null">
+				albumStatus,
+			</if>
+			<if test="createTime != null">
+				createTime,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=BIGINT},
+			</if>
+			<if test="albumName != null">
+				#{albumName,jdbcType=VARCHAR},
+			</if>
+			<if test="albumDesc != null">
+				#{albumDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="albumStatus != null">
+				#{albumStatus,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		update t_album
+		<set>
+			<if test="userId != null">
+				userId = #{userId,jdbcType=BIGINT},
+			</if>
+			<if test="albumName != null">
+				albumName = #{albumName,jdbcType=VARCHAR},
+			</if>
+			<if test="albumDesc != null">
+				albumDesc = #{albumDesc,jdbcType=VARCHAR},
+			</if>
+			<if test="albumStatus != null">
+				albumStatus = #{albumStatus,jdbcType=INTEGER},
+			</if>
+			<if test="validFlag != null">
+				validFlag = #{validFlag,jdbcType=INTEGER},
+			</if>
+
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.note.provider.model.DtoAlbum">
+		update t_album
+		set userId = #{userId,jdbcType=BIGINT},
+		albumName = #{albumName,jdbcType=VARCHAR},
+		albumDesc = #{albumDesc,jdbcType=VARCHAR},
+		albumStatus = #{albumStatus,jdbcType=INTEGER},
+		createTime = #{createTime,jdbcType=TIMESTAMP},
+		updateTime = #{updateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

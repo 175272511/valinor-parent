@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.comment.provider.dao.NoteCommentMapper">
+	<resultMap id="BaseResultMap" type="com.ninesale.valinor.comment.provider.model.DtoNoteComment">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="userId" property="userId" jdbcType="BIGINT" />
+		<result column="replyUserIdListStr" property="replyUserIdListStr" jdbcType="VARCHAR" />
+		<result column="replyUserNameListStr" property="replyUserNameListStr" jdbcType="VARCHAR" />
+		<result column="replyCommentId" property="replyCommentId" jdbcType="BIGINT" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="noteId" property="noteId" jdbcType="BIGINT" />
+		<result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, userId, replyUserIdListStr, replyUserNameListStr, replyCommentId, content, noteId, validFlag, createTime, updateTime
+	</sql>
+
+	<select id="selectCommentList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_note_comment
+		<where>
+			<if test="noteComment.noteId != null">
+				noteId = #{noteComment.noteId}
+			</if>
+		</where>
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	<select id="selectCommentTotalNum" parameterType="com.ninesale.valinor.comment.provider.model.DtoNoteComment" resultType="java.lang.Integer">
+	    select count(*) 
+	    from t_note_comment
+		<where>
+			<if test="noteId != null">
+				noteId = #{noteId}
+			</if>
+		</where>
+	</select>	
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from t_note_comment
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		t_note_comment
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.ninesale.valinor.comment.provider.model.DtoNoteComment">
+		insert into t_note_comment (id, userId,
+		replyUserIdListStr,
+		replyUserNameListStr, replyCommentId, content,
+		noteId,
+		validFlag, createTime,
+		updateTime)
+		values
+		(#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT},
+		#{replyUserIdListStr,jdbcType=VARCHAR},
+		#{replyUserNameListStr,jdbcType=VARCHAR},
+		#{replyCommentId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR},
+		#{noteId,jdbcType=BIGINT},
+		#{validFlag,jdbcType=INTEGER},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.ninesale.valinor.comment.provider.model.DtoNoteComment">
+		<selectKey resultType="java.lang.Long" keyProperty="id">
+			select last_insert_id() as id
+		</selectKey>
+		insert into t_note_comment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				userId,
+			</if>
+			<if test="replyUserIdListStr != null">
+				replyUserIdListStr,
+			</if>
+			<if test="replyUserNameListStr != null">
+				replyUserNameListStr,
+			</if>
+			<if test="replyCommentId != null">
+				replyCommentId,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="noteId != null">
+				noteId,
+			</if>
+			<if test="validFlag != null">
+				validFlag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=BIGINT},
+			</if>
+			<if test="replyUserIdListStr != null">
+				#{replyUserIdListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="replyUserNameListStr != null">
+				#{replyUserNameListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="replyCommentId != null">
+				#{replyCommentId,jdbcType=BIGINT},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="noteId != null">
+				#{noteId,jdbcType=BIGINT},
+			</if>
+			<if test="validFlag != null">
+				#{validFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.comment.provider.model.DtoNoteComment">
+		update t_note_comment
+		<set>
+			<if test="userId != null">
+				userId = #{userId,jdbcType=BIGINT},
+			</if>
+			<if test="replyUserIdListStr != null">
+				replyUserIdListStr =
+				#{replyUserIdListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="replyUserNameListStr != null">
+				replyUserNameListStr =
+				#{replyUserNameListStr,jdbcType=VARCHAR},
+			</if>
+			<if test="replyCommentId != null">
+				replyCommentId = #{replyCommentId,jdbcType=BIGINT},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=VARCHAR},
+			</if>
+			<if test="noteId != null">
+				noteId = #{noteId,jdbcType=BIGINT},
+			</if>
+			<if test="validFlag != null">
+				validFlag = #{validFlag,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.comment.provider.model.DtoNoteComment">
+		update t_note_comment
+		set userId =
+		#{userId,jdbcType=BIGINT},
+		replyUserIdListStr =
+		#{replyUserIdListStr,jdbcType=VARCHAR},
+		replyUserNameListStr =
+		#{replyUserNameListStr,jdbcType=VARCHAR},
+		replyCommentId =
+		#{replyCommentId,jdbcType=BIGINT},
+		content =
+		#{content,jdbcType=VARCHAR},
+		noteId = #{noteId,jdbcType=BIGINT},
+		validFlag = #{validFlag,jdbcType=INTEGER},
+		createTime =
+		#{createTime,jdbcType=TIMESTAMP},
+		updateTime =
+		#{updateTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

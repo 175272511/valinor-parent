@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.item.provider.dao.ItemAttributeMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.item.provider.model.DtoItemAttribute" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="attrName" property="attrName" jdbcType="VARCHAR" />
+    <result column="categId" property="categId" jdbcType="INTEGER" />
+    <result column="attrContext" property="attrContext" jdbcType="VARCHAR" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, attrName, categId, attrContext, validFlag, modifyUserId, modifyUserName, createTime, 
+    updateTime
+  </sql>
+  <select id="queryItemAttrListByIds" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_attribute t where t.id in
+    <foreach collection="list" item="item" open="(" separator="," close=")">  
+    	#{item}
+    </foreach>
+  </select>
+  
+  <select id="queryItemAttributeList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.item.provider.model.DtoItemAttribute" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_attribute t
+    <where>
+    	<if test="id != null and id != ''">
+    		t.id = #{id,jdbcType=BIGINT}
+    	</if>
+    	<if test="categId != null and categId != ''">
+    		and t.categId = #{categId,jdbcType=INTEGER}
+    	</if>
+    	<if test="attrName != null and attrName != ''">
+    		and t.attrName = #{attrName,jdbcType=VARCHAR}
+    	</if>
+    	<if test="attrContext != null and attrContext != ''">
+    		and t.attrContext = #{attrContext,jdbcType=VARCHAR}
+    	</if>
+    	<if test="validFlag != null and validFlag != ''">
+    		and t.validFlag = #{validFlag,jdbcType=BIGINT}
+    	</if>
+    </where>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_item_attribute
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="com.ninesale.valinor.item.provider.model.DtoItemAttribute" keyProperty="id" useGeneratedKeys="true">
+  INSERT INTO t_item_attribute (
+	attrName,
+	categId,
+	attrContext,
+	validFlag,
+	modifyUserId,
+	modifyUserName,
+	createTime,
+	updateTime
+   )
+   VALUES
+	(
+		#{attrName,jdbcType=VARCHAR}, 
+		#{categId,jdbcType=INTEGER}, 
+		#{attrContext,jdbcType=VARCHAR}, 
+		#{validFlag,jdbcType=INTEGER}, 
+		#{modifyUserId,jdbcType=BIGINT}, 
+		#{modifyUserName,jdbcType=VARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  
+  <insert id="batchInsert" parameterType="java.util.List" keyProperty="id" useGeneratedKeys="true"> 
+    <selectKey keyProperty="id" resultType="int" order="AFTER">  
+            select last_insert_id()  
+    </selectKey>  
+    insert into t_item_attribute (
+	      attrName, 
+	      categId, 
+	      attrContext, 
+	      validFlag, 
+	      modifyUserId, 
+	      modifyUserName, 
+	      createTime, 
+	      updateTime
+      )
+    values 
+    <foreach collection="list" item="item" index="index" separator=","> 
+    (
+	      #{item.attrName,jdbcType=VARCHAR}, 
+	      #{item.categId,jdbcType=INTEGER}, 
+	      #{item.attrContext,jdbcType=VARCHAR}, 
+	      #{item.validFlag,jdbcType=INTEGER}, 
+	      #{item.modifyUserId,jdbcType=BIGINT}, 
+          #{item.modifyUserName,jdbcType=VARCHAR}, 
+          #{item.createTime,jdbcType=TIMESTAMP}, 
+          #{item.updateTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItemAttribute" >
+    insert into t_item_attribute
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="attrName != null" >
+        attrName,
+      </if>
+      <if test="categId != null" >
+        categId,
+      </if>
+      <if test="attrContext != null" >
+        attrContext,
+      </if>
+      <if test="validFlag != null" >
+        validFlag,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="attrName != null" >
+        #{attrName,jdbcType=VARCHAR},
+      </if>
+      <if test="categId != null" >
+        #{categId,jdbcType=INTEGER},
+      </if>
+      <if test="attrContext != null" >
+        #{attrContext,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItemAttribute" >
+    update t_item_attribute
+    <set >
+      <if test="attrName != null" >
+        attrName = #{attrName,jdbcType=VARCHAR},
+      </if>
+      <if test="categId != null" >
+        categId = #{categId,jdbcType=INTEGER},
+      </if>
+      <if test="attrContext != null" >
+        attrContext = #{attrContext,jdbcType=VARCHAR},
+      </if>
+      <if test="validFlag != null" >
+        validFlag = #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.item.provider.model.DtoItemAttribute" >
+    update t_item_attribute
+    set attrName = #{attrName,jdbcType=VARCHAR},
+      categId = #{categId,jdbcType=INTEGER},
+      attrContext = #{attrContext,jdbcType=VARCHAR},
+      validFlag = #{validFlag,jdbcType=INTEGER},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

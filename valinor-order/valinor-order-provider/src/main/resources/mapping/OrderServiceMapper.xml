@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.order.provider.dao.OrderServiceMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.order.provider.model.DtoOrderService" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="orderId" property="orderId" jdbcType="BIGINT" />
+    <result column="orderDetlId" property="orderDetlId" jdbcType="BIGINT" />
+    <result column="skuId" property="skuId" jdbcType="BIGINT" />
+    <result column="skuNum" property="skuNum" jdbcType="BIGINT" />
+    <result column="serviceType" property="serviceType" jdbcType="INTEGER" />
+    <result column="exprCompany" property="exprCompany" jdbcType="VARCHAR" />
+    <result column="exprNo" property="exprNo" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, orderId, orderDetlId, skuId, skuNum, serviceType, exprCompany, exprNo, status, 
+    createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_service
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_order_service
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderService" >
+    insert into t_order_service (id, orderId, orderDetlId, 
+      skuId, skuNum, serviceType, 
+      exprCompany, exprNo, status, 
+      createTime, updateTime)
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{orderDetlId,jdbcType=BIGINT}, 
+      #{skuId,jdbcType=BIGINT}, #{skuNum,jdbcType=BIGINT}, #{serviceType,jdbcType=INTEGER}, 
+      #{exprCompany,jdbcType=VARCHAR}, #{exprNo,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderService" >
+    insert into t_order_service
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orderId != null" >
+        orderId,
+      </if>
+      <if test="orderDetlId != null" >
+        orderDetlId,
+      </if>
+      <if test="skuId != null" >
+        skuId,
+      </if>
+      <if test="skuNum != null" >
+        skuNum,
+      </if>
+      <if test="serviceType != null" >
+        serviceType,
+      </if>
+      <if test="exprCompany != null" >
+        exprCompany,
+      </if>
+      <if test="exprNo != null" >
+        exprNo,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderDetlId != null" >
+        #{orderDetlId,jdbcType=BIGINT},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=BIGINT},
+      </if>
+      <if test="skuNum != null" >
+        #{skuNum,jdbcType=BIGINT},
+      </if>
+      <if test="serviceType != null" >
+        #{serviceType,jdbcType=INTEGER},
+      </if>
+      <if test="exprCompany != null" >
+        #{exprCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="exprNo != null" >
+        #{exprNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderService" >
+    update t_order_service
+    <set >
+      <if test="orderId != null" >
+        orderId = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderDetlId != null" >
+        orderDetlId = #{orderDetlId,jdbcType=BIGINT},
+      </if>
+      <if test="skuId != null" >
+        skuId = #{skuId,jdbcType=BIGINT},
+      </if>
+      <if test="skuNum != null" >
+        skuNum = #{skuNum,jdbcType=BIGINT},
+      </if>
+      <if test="serviceType != null" >
+        serviceType = #{serviceType,jdbcType=INTEGER},
+      </if>
+      <if test="exprCompany != null" >
+        exprCompany = #{exprCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="exprNo != null" >
+        exprNo = #{exprNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.order.provider.model.DtoOrderService" >
+    update t_order_service
+    set orderId = #{orderId,jdbcType=BIGINT},
+      orderDetlId = #{orderDetlId,jdbcType=BIGINT},
+      skuId = #{skuId,jdbcType=BIGINT},
+      skuNum = #{skuNum,jdbcType=BIGINT},
+      serviceType = #{serviceType,jdbcType=INTEGER},
+      exprCompany = #{exprCompany,jdbcType=VARCHAR},
+      exprNo = #{exprNo,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

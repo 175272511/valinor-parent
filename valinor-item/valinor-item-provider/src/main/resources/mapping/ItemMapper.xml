@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.item.provider.dao.ItemMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.item.provider.model.DtoItem" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="categLvlId" property="categLvlId" jdbcType="INTEGER" />
+    <result column="brandId" property="brandId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="artNo" property="artNo" jdbcType="VARCHAR" />
+    <result column="barCode" property="barCode" jdbcType="VARCHAR" />
+    <result column="mainImgId" property="mainImgId" jdbcType="BIGINT" />
+    <result column="assistImgIds" property="assistImgIds" jdbcType="VARCHAR" />
+    <result column="sellprice" property="sellprice" jdbcType="DECIMAL" />
+    <result column="weight" property="weight" jdbcType="VARCHAR" />
+    <result column="volume" property="volume" jdbcType="VARCHAR" />
+    <result column="lastUpTime" property="lastUpTime" jdbcType="TIMESTAMP" />
+    <result column="lastDownTime" property="lastDownTime" jdbcType="TIMESTAMP" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="starLevel" property="starLevel" jdbcType="INTEGER" />
+    <result column="timeToMarket" property="timeToMarket" jdbcType="DATE" />
+    <result column="recommendItem" property="recommendItem" jdbcType="INTEGER" />
+    <result column="hotItem" property="hotItem" jdbcType="INTEGER" />
+    <result column="itemDesc" property="itemDesc" jdbcType="VARCHAR" />
+ </resultMap>
+ <!--  <resultMap id="ResultMapWithBLOBs" type="com.ninesale.valinor.item.provider.model.Item" extends="BaseResultMap" >
+    <result column="itemDesc" property="itemDesc" jdbcType="LONGVARCHAR" />
+  </resultMap> -->
+  <sql id="Base_Column_List" >
+    id, title, categLvlId, brandId, status, artNo, barCode, mainImgId, assistImgIds, 
+    sellprice, weight, volume, lastUpTime, lastDownTime, createTime, updateTime, starLevel, 
+    timeToMarket, recommendItem, hotItem,itemDesc
+  </sql>
+  <!-- <sql id="Blob_Column_List" >
+    itemDesc
+  </sql> -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryItemByPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_item
+		<where>
+			<if test="item.title != null and item.title != ''">
+				(
+				title like CONCAT("%",#{item.title,jdbcType=VARCHAR},"%")
+				or 
+				artNo like CONCAT("%",#{item.artNo,jdbcType=VARCHAR},"%")
+				or 
+				barCode like CONCAT("%",#{item.barCode,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+		order by updateTime desc
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfItem" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" resultType="java.lang.Integer">
+	    select count(1) 
+	    from t_item
+   		<where>
+			<if test="title != null and title != ''">
+				(
+				title like CONCAT("%",#{title,jdbcType=VARCHAR},"%")
+				or 
+				artNo like CONCAT("%",#{artNo,jdbcType=VARCHAR},"%")
+				or 
+				barCode like CONCAT("%",#{barCode,jdbcType=VARCHAR},"%")
+				)
+			</if>
+		</where>	
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" keyProperty="id" useGeneratedKeys="true">
+    insert into t_item (title, categLvlId, 
+      brandId, status, artNo, 
+      barCode, mainImgId, assistImgIds, 
+      sellprice, weight, volume, 
+      lastUpTime, lastDownTime, createTime, 
+      updateTime, starLevel, timeToMarket, 
+      recommendItem, hotItem, itemDesc
+      )
+    values (#{title,jdbcType=VARCHAR}, #{categLvlId,jdbcType=INTEGER}, 
+      #{brandId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{artNo,jdbcType=VARCHAR}, 
+      #{barCode,jdbcType=VARCHAR}, #{mainImgId,jdbcType=BIGINT}, #{assistImgIds,jdbcType=VARCHAR}, 
+      #{sellprice,jdbcType=DECIMAL}, #{weight,jdbcType=VARCHAR}, #{volume,jdbcType=VARCHAR}, 
+      #{lastUpTime,jdbcType=TIMESTAMP}, #{lastDownTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{starLevel,jdbcType=INTEGER}, #{timeToMarket,jdbcType=DATE}, 
+      #{recommendItem,jdbcType=INTEGER}, #{hotItem,jdbcType=INTEGER}, #{itemDesc,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" >
+    insert into t_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="categLvlId != null" >
+        categLvlId,
+      </if>
+      <if test="brandId != null" >
+        brandId,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="artNo != null" >
+        artNo,
+      </if>
+      <if test="barCode != null" >
+        barCode,
+      </if>
+      <if test="mainImgId != null" >
+        mainImgId,
+      </if>
+      <if test="assistImgIds != null" >
+        assistImgIds,
+      </if>
+      <if test="sellprice != null" >
+        sellprice,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+      <if test="volume != null" >
+        volume,
+      </if>
+      <if test="lastUpTime != null" >
+        lastUpTime,
+      </if>
+      <if test="lastDownTime != null" >
+        lastDownTime,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="starLevel != null" >
+        starLevel,
+      </if>
+      <if test="timeToMarket != null" >
+        timeToMarket,
+      </if>
+      <if test="recommendItem != null" >
+        recommendItem,
+      </if>
+      <if test="hotItem != null" >
+        hotItem,
+      </if>
+      <if test="itemDesc != null" >
+        itemDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="categLvlId != null" >
+        #{categLvlId,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="artNo != null" >
+        #{artNo,jdbcType=VARCHAR},
+      </if>
+      <if test="barCode != null" >
+        #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainImgId != null" >
+        #{mainImgId,jdbcType=BIGINT},
+      </if>
+      <if test="assistImgIds != null" >
+        #{assistImgIds,jdbcType=VARCHAR},
+      </if>
+      <if test="sellprice != null" >
+        #{sellprice,jdbcType=DECIMAL},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="volume != null" >
+        #{volume,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpTime != null" >
+        #{lastUpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastDownTime != null" >
+        #{lastDownTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="starLevel != null" >
+        #{starLevel,jdbcType=INTEGER},
+      </if>
+      <if test="timeToMarket != null" >
+        #{timeToMarket,jdbcType=DATE},
+      </if>
+      <if test="recommendItem != null" >
+        #{recommendItem,jdbcType=INTEGER},
+      </if>
+      <if test="hotItem != null" >
+        #{hotItem,jdbcType=INTEGER},
+      </if>
+      <if test="itemDesc != null" >
+        #{itemDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" >
+    update t_item
+    <set >
+      <if test="title != null and title != ''" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="categLvlId != null" >
+        categLvlId = #{categLvlId,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null" >
+        brandId = #{brandId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="artNo != null and artNo != ''" >
+        artNo = #{artNo,jdbcType=VARCHAR},
+      </if>
+      <if test="barCode != null and barCode != ''" >
+        barCode = #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainImgId != null" >
+        mainImgId = #{mainImgId,jdbcType=BIGINT},
+      </if>
+      <if test="assistImgIds != null and assistImgIds != ''" >
+        assistImgIds = #{assistImgIds,jdbcType=VARCHAR},
+      </if>
+      <if test="sellprice != null" >
+        sellprice = #{sellprice,jdbcType=DECIMAL},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="volume != null" >
+        volume = #{volume,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpTime != null" >
+        lastUpTime = #{lastUpTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastDownTime != null" >
+        lastDownTime = #{lastDownTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="starLevel != null" >
+        starLevel = #{starLevel,jdbcType=INTEGER},
+      </if>
+      <if test="timeToMarket != null" >
+        timeToMarket = #{timeToMarket,jdbcType=DATE},
+      </if>
+      <if test="recommendItem != null" >
+        recommendItem = #{recommendItem,jdbcType=INTEGER},
+      </if>
+      <if test="hotItem != null" >
+        hotItem = #{hotItem,jdbcType=INTEGER},
+      </if>
+      <if test="itemDesc != null and itemDesc != ''" >
+        itemDesc = #{itemDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" >
+    update t_item
+    set title = #{title,jdbcType=VARCHAR},
+      categLvlId = #{categLvlId,jdbcType=INTEGER},
+      brandId = #{brandId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      artNo = #{artNo,jdbcType=VARCHAR},
+      barCode = #{barCode,jdbcType=VARCHAR},
+      mainImgId = #{mainImgId,jdbcType=BIGINT},
+      assistImgIds = #{assistImgIds,jdbcType=VARCHAR},
+      sellprice = #{sellprice,jdbcType=DECIMAL},
+      weight = #{weight,jdbcType=VARCHAR},
+      volume = #{volume,jdbcType=VARCHAR},
+      lastUpTime = #{lastUpTime,jdbcType=TIMESTAMP},
+      lastDownTime = #{lastDownTime,jdbcType=TIMESTAMP},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      starLevel = #{starLevel,jdbcType=INTEGER},
+      timeToMarket = #{timeToMarket,jdbcType=DATE},
+      recommendItem = #{recommendItem,jdbcType=INTEGER},
+      hotItem = #{hotItem,jdbcType=INTEGER},
+      itemDesc = #{itemDesc,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.item.provider.model.DtoItem" >
+    update t_item
+    set title = #{title,jdbcType=VARCHAR},
+      categLvlId = #{categLvlId,jdbcType=INTEGER},
+      brandId = #{brandId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      artNo = #{artNo,jdbcType=VARCHAR},
+      barCode = #{barCode,jdbcType=VARCHAR},
+      mainImgId = #{mainImgId,jdbcType=BIGINT},
+      assistImgIds = #{assistImgIds,jdbcType=VARCHAR},
+      sellprice = #{sellprice,jdbcType=DECIMAL},
+      weight = #{weight,jdbcType=VARCHAR},
+      volume = #{volume,jdbcType=VARCHAR},
+      lastUpTime = #{lastUpTime,jdbcType=TIMESTAMP},
+      lastDownTime = #{lastDownTime,jdbcType=TIMESTAMP},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      starLevel = #{starLevel,jdbcType=INTEGER},
+      timeToMarket = #{timeToMarket,jdbcType=DATE},
+      recommendItem = #{recommendItem,jdbcType=INTEGER},
+      hotItem = #{hotItem,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

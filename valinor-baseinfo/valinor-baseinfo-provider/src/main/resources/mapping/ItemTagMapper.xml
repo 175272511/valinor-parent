@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.baseinfo.provider.dao.ItemTagMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="itemTagName" property="itemTagName" jdbcType="VARCHAR" />
+    <result column="brandTagId" property="brandTagId" jdbcType="BIGINT" />
+    <result column="imgId" property="imgId" jdbcType="BIGINT" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="QueryItemTagByPageMap" type="com.ninesale.valinor.baseinfo.provider.model.DtoItem2Tag" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="itemTagName" property="itemTagName" jdbcType="VARCHAR" />
+    <result column="brandTagId" property="brandTagId" jdbcType="BIGINT" />
+    <result column="imgId" property="imgId" jdbcType="BIGINT" />
+    <result column="modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+    <result column="modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <association property="brandTag" javaType="com.ninesale.valinor.baseinfo.provider.model.DtoBrandTag" column="b_id"> 
+    	<id column="b_id" property="id" jdbcType="BIGINT" />
+	    <result column="brandTagName" property="brandTagName" jdbcType="VARCHAR" />
+	    <result column="b_imgId" property="imgId" jdbcType="BIGINT" />
+	    <result column="b_modifyUserId" property="modifyUserId" jdbcType="BIGINT" />
+	    <result column="b_modifyUserName" property="modifyUserName" jdbcType="VARCHAR" />
+	    <result column="b_createTime" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="b_updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, itemTagName, brandTagId, imgId, modifyUserId, modifyUserName, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_tag
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryItemTagList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_tag
+    <where>
+    	<if test="id != null">
+    		id = #{id,jdbcType=BIGINT}
+    	</if> 
+    	<if test="brandTagId != null">
+    		and brandTagId = #{brandTagId,jdbcType=BIGINT}
+    	</if> 
+    	<if test="itemTagName != null">
+    		and itemTagName = #{itemTagName,jdbcType=VARCHAR}
+    	</if>
+    </where>
+    order by updateTime DESC
+  </select>
+  
+   <select id="queryItemTagByPage" resultMap="QueryItemTagByPageMap">
+		SELECT
+			i.id,
+			i.itemTagName,
+			i.brandTagId,
+			i.imgId,
+			i.modifyUserId,
+			i.modifyUserName,
+			i.createTime,
+			i.updateTime,
+			b.id as b_id,
+			b.brandTagName,
+			b.imgId as b_imgId,
+			b.modifyUserId as b_modifyUserId,
+			b.modifyUserName as b_modifyUserName,
+			b.createTime as b_createTime,
+			b.updateTime as b_updateTime
+		FROM
+			t_item_tag i
+		LEFT OUTER JOIN t_brand_tag b ON i.brandTagId = b.id
+		<where>
+			<if test="itemTag.itemTagName != null and itemTag.itemTagName != ''">
+				i.itemTagName like CONCAT("%",#{itemTag.itemTagName,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="itemTag.brandTagId != null">
+				and i.brandTagId = #{itemTag.brandTagId,jdbcType=BIGINT}
+			</if>
+		</where>	
+		order by i.updateTime DESC
+		<if test="beginId != 0 or pageSize != 0">
+			LIMIT #{beginId},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="queryTotalNumOfItemTag" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" resultType="java.lang.Integer">
+	    SELECT
+			count(1)
+		FROM
+			t_item_tag i
+		LEFT OUTER JOIN t_brand_tag b ON i.brandTagId = b.id
+		<where>
+			<if test="itemTagName != null and itemTagName != ''">
+				i.itemTagName like CONCAT("%",#{itemTagName,jdbcType=VARCHAR},"%")
+			</if>
+			<if test="brandTagId != null">
+				and i.brandTagId = #{brandTagId,jdbcType=BIGINT}
+			</if>
+		</where>	
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_item_tag
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" keyProperty="id" useGeneratedKeys="true"> 
+    INSERT INTO t_item_tag (
+		itemTagName,
+		brandTagId,
+		imgId,
+		modifyUserId,
+		modifyUserName,
+		createTime,
+		updateTime
+	)
+	VALUES
+	(
+		#{itemTagName,jdbcType=VARCHAR}, 
+		#{brandTagId,jdbcType=BIGINT}, 
+		#{imgId,jdbcType=BIGINT}, 
+		#{modifyUserId,jdbcType=BIGINT}, 
+		#{modifyUserName,jdbcType=VARCHAR}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" >
+    insert into t_item_tag
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="itemTagName != null" >
+        itemTagName,
+      </if>
+      <if test="brandTagId != null" >
+        brandTagId,
+      </if>
+      <if test="imgId != null" >
+        imgId,
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId,
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="itemTagName != null" >
+        #{itemTagName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandTagId != null" >
+        #{brandTagId,jdbcType=BIGINT},
+      </if>
+      <if test="imgId != null" >
+        #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserId != null" >
+        #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" >
+    update t_item_tag
+    <set >
+      <if test="itemTagName != null" >
+        itemTagName = #{itemTagName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandTagId != null" >
+        brandTagId = #{brandTagId,jdbcType=BIGINT},
+      </if>
+      <if test="imgId != null" >
+        imgId = #{imgId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserId != null" >
+        modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      </if>
+      <if test="modifyUserName != null" >
+        modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.baseinfo.provider.model.DtoItemTag" >
+    update t_item_tag
+    set itemTagName = #{itemTagName,jdbcType=VARCHAR},
+      brandTagId = #{brandTagId,jdbcType=BIGINT},
+      imgId = #{imgId,jdbcType=BIGINT},
+      modifyUserId = #{modifyUserId,jdbcType=BIGINT},
+      modifyUserName = #{modifyUserName,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

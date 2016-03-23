@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.userinfo.provider.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.userinfo.api.model.DtoUserAddress" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="userId" property="userId" jdbcType="BIGINT" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="road" property="road" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="linkman" property="linkman" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="validFlag" property="validFlag" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, province, city, area, road, address, linkman, phone, status, validFlag, 
+    createTime, updateTime
+  </sql>
+  <select id="getUserAddress" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserAddress"  >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_adress
+    where userId = #{userId,jdbcType=BIGINT}
+    AND validFlag = 0
+    ORDER BY createTime
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_user_adress
+    where id = #{id,jdbcType=BIGINT}
+    AND validFlag = 0
+  </delete>
+  <insert id="insertUserAddress" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserAddress" >
+    insert into t_user_adress (userId, province, 
+      city, area, road, address, 
+      linkman, phone, status, 
+      validFlag, createTime
+      )
+    values (#{userId,jdbcType=BIGINT}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{road,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{linkman,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 0, 
+      0, now()
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserAddress" >
+    insert into t_user_adress
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        userId,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="area != null" >
+        area,
+      </if>
+      <if test="road != null" >
+        road,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="linkman != null" >
+        linkman,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="validFlag != null" >
+        validFlag,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="validFlag != null" >
+        #{validFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateUserAddress" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserAddress" >
+    update t_user_adress
+    <set >
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null" >
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        road = #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="linkman != null" >
+        linkman = #{linkman,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+    AND validFlag = 0
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserAddress" >
+    update t_user_adress
+    set userId = #{userId,jdbcType=BIGINT},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      road = #{road,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      linkman = #{linkman,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      validFlag = #{validFlag,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+    AND validFlag = 0
+  </update>
+  
+  <select id="getUserPoints" parameterType="long" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserPoints">
+  	SELECT t.pointsCount FROM t_user_points t WHERE t.userId = #{userId}
+  </select>
+  
+  <select id="getUserReceipt" parameterType="long" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserReceipt">
+  	SELECT t.id,t.userId,t.receiptType,t.receiptTitle FROM t_user_receipt t WHERE t.userId = #{userId}
+  </select>
+  
+  <insert id="insertUserReceipt" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserReceipt">
+  	INSERT INTO t_user_receipt (
+	userId,
+	receiptType,
+	receiptTitle,
+	STATUS,
+	createTime
+	)
+	VALUES
+	(#{userId}, #{receiptType}, #{receiptTitle}, 0, now());
+  </insert>
+  
+  <delete id="deleteUserReceipt" parameterType="com.ninesale.valinor.userinfo.api.model.DtoUserReceipt">
+  	DELETE FROM t_user_receipt WHERE id = #{id} AND userId = #{userId};
+  </delete>
+  
+  <select id="getUserOrderInfo" parameterType="map" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserOrderInfo">
+  	SELECT
+	od.orderId,
+	om.orderNo,
+	om.payWay,
+	od.payFee,
+	od.skuId,
+	od.skuNum,
+	tis.title,
+	tis.attrValueList,
+	od.`status`,
+	tis.mainImgUrl imgUrl
+	FROM
+		valinor_order.t_order_main om
+	INNER JOIN valinor_order.t_order_detl od ON om.id = od.orderId
+	INNER JOIN valinor_item.t_item_sku tis ON od.skuId = tis.id
+	WHERE
+		om.userId = #{userId}
+	ORDER BY om.createTime
+	<if test="!(beginId == 0 and pageSize == null)">
+		LIMIT #{beginId},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="getUserOrderCount" parameterType="long" resultType="int">
+  	SELECT
+	count(*)
+	FROM
+		valinor_order.t_order_main om
+	INNER JOIN valinor_order.t_order_detl od ON om.id = od.orderId
+	INNER JOIN valinor_item.t_item_sku tis ON od.skuId = tis.id
+	WHERE
+		om.userId = #{userId}
+  </select>
+  
+  <select id="getUserCollect" parameterType="map" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserCollect">
+  	SELECT
+	uc.skuId,
+	tis.title,
+	tis.attrValueList,
+	tis.mainImgUrl,
+	tis.sellprice
+	FROM
+		t_user_collect uc
+	INNER JOIN valinor_item.t_item_sku tis ON uc.skuId = tis.id
+	WHERE
+		uc.userId = #{userId}
+	ORDER BY
+		uc.createTime
+	<if test="!(beginId == 0 and pageSize == null)">
+		LIMIT #{beginId},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="getUserCollectCount" parameterType="long" resultType="int">
+  	SELECT
+	count(*)
+	FROM
+		t_user_collect uc
+	INNER JOIN valinor_item.t_item_sku tis ON uc.skuId = tis.id
+	WHERE
+		uc.userId = #{userId}
+  </select>
+  
+  <select id="getUserWallet" parameterType="long" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserWallet">
+  	SELECT t.amount FROM t_user_wallet t WHERE t.userId = #{userId}
+  </select>
+  
+  <select id="getSkuIdByUserId" parameterType="long" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserCollect">
+  	SELECT t.skuId FROM t_user_collect t WHERE t.userId = #{userId}
+  </select>
+  
+  <select id="getPersonCount" parameterType="long" resultType="com.ninesale.valinor.userinfo.api.model.DtoUserCount">
+  	SELECT t.concernCount,t.fansCount FROM t_user_count t WHERE t.userId = #{userId}
+  </select>
+  
+  <insert id="insertUserCount" parameterType="long">
+  	INSERT INTO t_user_count (
+		userId,
+		concernCount,
+		fansCount,
+		createTime
+	)
+	VALUES
+		(#{userId}, 0, 0, NOW());
+  </insert>
+  
+  <insert id="insertConcernPerson">
+  	INSERT INTO t_user_concern_person (
+		userId,
+		username,
+		concernId,
+		concernName,
+		createTime
+	)
+	VALUES
+		(#{userId}, 
+		#{username}, 
+		#{concernId}, 
+		#{concernName}, 
+		NOW());
+  </insert>
+  
+  <update id="insertPersonConcern" parameterType="long">
+	UPDATE t_user_count SET concernCount = concernCount + 1 WHERE userId = #{userId};
+  </update>
+  
+  <update id="insertPersonFans" parameterType="long">
+	UPDATE t_user_count SET fansCount = fansCount + 1 WHERE userId = #{concernId};
+  </update>
+  
+  <delete id="deleteConcernPerson">
+  	DELETE FROM t_user_concern_person WHERE userId = #{userId} AND concernId = #{concernId};
+  </delete>
+  
+  <update id="deletePersonConcern" parameterType="long">
+	UPDATE t_user_count SET concernCount = concernCount - 1 WHERE userId = #{userId};
+  </update>
+  
+  <update id="deletePersonFans" parameterType="long">
+	UPDATE t_user_count SET fansCount = fansCount - 1 WHERE userId = #{concernId};
+  </update>
+
+  <insert id="insertNotePerson">
+  	INSERT INTO t_user_concern_note (
+		userId,
+		noteId,
+		noteTitle,
+		createTime
+	)
+	VALUES
+		(#{userId}, 
+		#{noteId}, 
+		#{noteTitle}, 
+		NOW());
+  </insert>
+  
+  <delete id="deleteNotePerson">
+  	DELETE FROM t_user_concern_note WHERE userId = #{userId} AND noteId = #{noteId}
+  </delete>
+  
+  <insert id="insertTagPerson">
+  	INSERT INTO t_user_concern_tag (
+		userId,
+		tagId,
+		tagName,
+		createTime
+	)
+	VALUES
+		(#{userId}, 
+		#{tagId}, 
+		#{tagName}, 
+		NOW());
+  </insert>
+  
+  <delete id="deleteTagPerson">
+  	DELETE FROM t_user_concern_tag WHERE userId = #{userId} AND tagId = #{tagId};
+  </delete>
+  
+  <select id="getConcernPersonList" resultType="com.ninesale.valinor.userinfo.api.model.DtoConcernPerson">
+  	SELECT
+		tcp.concernId,
+		tcp.concernName,
+		tuc.fansCount
+	FROM
+		t_user_concern_person tcp
+	LEFT JOIN t_user_count tuc 
+	ON tcp.concernId = tuc.userId
+	WHERE tcp.userId = #{userId}
+	ORDER BY tcp.createTime DESC
+	<if test="!(beginId == 0 and pageSize == null)">
+		LIMIT #{beginId},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="getConcernPersonCount" parameterType="long" resultType="int">
+  	SELECT
+		count(*)
+	FROM
+		t_user_concern_person tcp
+	LEFT JOIN t_user_count tuc ON tcp.concernId = tuc.userId
+	WHERE
+		tcp.userId = #{userId}
+	  	
+  </select>
+  
+  <select id="getConcernNoteList" resultType="com.ninesale.valinor.userinfo.api.model.DtoConcernNote">
+  	SELECT
+		t.noteId,
+		t.noteTitle
+	FROM
+		t_user_concern_note t
+	WHERE t.userId = #{userId}
+	ORDER BY t.createTime DESC
+	<if test="!(beginId == 0 and pageSize == null)">
+		LIMIT #{beginId},#{pageSize}
+	</if>
+  </select>
+  
+  <select id="getConcernNoteCount" parameterType="long" resultType="int">
+  	SELECT
+		count(*)
+	FROM
+		t_user_concern_note t
+	WHERE
+		t.userId = #{userId};
+  </select>
+  
+  <select id="getConcernTagList" resultType="com.ninesale.valinor.userinfo.api.model.DtoConcernTag">
+  	SELECT
+		t.tagId,
+		t.tagName
+	FROM
+		t_user_concern_tag t
+	WHERE
+		t.userId = #{userId}
+	ORDER BY
+		t.createTime DESC
+  </select>
+  
+  <insert id="insertUserPraise">
+  	INSERT INTO t_user_praise (
+		noteId,
+		userId,
+		noteTitle,
+		createTime
+	)
+	VALUES
+		(#{noteId},
+		#{userId},
+		#{noteTitle},
+		NOW()
+		);
+  </insert>
+  
+  <delete id="deleteUserPraise">
+  	DELETE FROM t_user_praise WHERE userId = #{userId} AND noteId = #{noteId}
+  </delete>
+  
+</mapper>

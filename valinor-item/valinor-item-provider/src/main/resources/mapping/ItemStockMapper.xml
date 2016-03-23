@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ninesale.valinor.item.provider.dao.ItemStockMapper" >
+  <resultMap id="BaseResultMap" type="com.ninesale.valinor.item.provider.model.DtoItemStock" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="skuId" property="skuId" jdbcType="BIGINT" />
+    <result column="stockSnapId" property="stockSnapId" jdbcType="BIGINT" />
+    <result column="costPrice" property="costPrice" jdbcType="DECIMAL" />
+    <result column="stockNum" property="stockNum" jdbcType="INTEGER" />
+    <result column="orderLockNum" property="orderLockNum" jdbcType="INTEGER" />
+    <result column="payLockNum" property="payLockNum" jdbcType="INTEGER" />
+    <result column="actvPreLockNum" property="actvPreLockNum" jdbcType="INTEGER" />
+    <result column="actvOrderLockNum" property="actvOrderLockNum" jdbcType="INTEGER" />
+    <result column="actvPayLockNum" property="actvPayLockNum" jdbcType="INTEGER" />
+    <result column="orderTotalNum" property="orderTotalNum" jdbcType="INTEGER" />
+    <result column="payTotalNum" property="payTotalNum" jdbcType="INTEGER" />
+    <result column="exptDlvHours" property="exptDlvHours" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, skuId, stockSnapId, costPrice, stockNum, orderLockNum, payLockNum, actvPreLockNum, 
+    actvOrderLockNum, actvPayLockNum, orderTotalNum, payTotalNum, exptDlvHours, createTime, 
+    updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_stock
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="queryItemStockList" resultMap="BaseResultMap" parameterType="com.ninesale.valinor.item.provider.model.DtoItemStock" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_stock
+    <where>
+      <if test="skuId != null" >
+        skuId = #{skuId,jdbcType=BIGINT}
+      </if>
+      <if test="stockSnapId != null" >
+        and stockSnapId = #{stockSnapId,jdbcType=BIGINT}
+      </if>
+      <if test="costPrice != null" >
+        and costPrice = #{costPrice,jdbcType=INTEGER}
+      </if>
+      <if test="stockNum != null" >
+        and stockNum = #{stockNum,jdbcType=INTEGER}
+      </if>
+      <if test="orderLockNum != null" >
+        and orderLockNum = #{orderLockNum,jdbcType=INTEGER}
+      </if>
+      <if test="payLockNum != null" >
+        and payLockNum = #{payLockNum,jdbcType=INTEGER}
+      </if>
+      <if test="actvPreLockNum != null" >
+        and actvPreLockNum = #{actvPreLockNum,jdbcType=INTEGER}
+      </if>
+      <if test="actvOrderLockNum != null" >
+        and actvOrderLockNum = #{actvOrderLockNum,jdbcType=INTEGER}
+      </if>
+      <if test="actvPayLockNum != null" >
+        and actvPayLockNum = #{actvPayLockNum,jdbcType=INTEGER}
+      </if>
+      <if test="orderTotalNum != null" >
+        and orderTotalNum = #{orderTotalNum,jdbcType=INTEGER}
+      </if>
+      <if test="payTotalNum != null" >
+        and payTotalNum = #{payTotalNum,jdbcType=INTEGER}
+      </if>
+      <if test="exptDlvHours != null" >
+        and exptDlvHours = #{exptDlvHours,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null" >
+        and reateTime = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+        and updateTime = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_item_stock
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="com.ninesale.valinor.item.provider.model.DtoItemStock" keyProperty="id" useGeneratedKeys="true">
+    INSERT INTO t_item_stock (
+		skuId,
+		stockSnapId,
+		costPrice,
+		stockNum,
+		orderLockNum,
+		payLockNum,
+		actvPreLockNum,
+		actvOrderLockNum,
+		actvPayLockNum,
+		orderTotalNum,
+		payTotalNum,
+		exptDlvHours,
+		createTime,
+		updateTime
+	)
+	VALUES
+	(
+		#{skuId,jdbcType=BIGINT}, 
+		#{stockSnapId,jdbcType=BIGINT}, 
+		#{costPrice,jdbcType=DECIMAL}, 
+		#{stockNum,jdbcType=INTEGER}, 
+		#{orderLockNum,jdbcType=INTEGER}, 
+		#{payLockNum,jdbcType=INTEGER}, 
+		#{actvPreLockNum,jdbcType=INTEGER}, 
+		#{actvOrderLockNum,jdbcType=INTEGER}, 
+		#{actvPayLockNum,jdbcType=INTEGER}, 
+		#{orderTotalNum,jdbcType=INTEGER}, 
+		#{payTotalNum,jdbcType=INTEGER}, 
+		#{exptDlvHours,jdbcType=INTEGER}, 
+		#{createTime,jdbcType=TIMESTAMP}, 
+		#{updateTime,jdbcType=TIMESTAMP}
+	)
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItemStock" >
+    insert into t_item_stock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="skuId != null" >
+        skuId,
+      </if>
+      <if test="stockSnapId != null" >
+        stockSnapId,
+      </if>
+      <if test="costPrice != null" >
+        costPrice,
+      </if>
+      <if test="stockNum != null" >
+        stockNum,
+      </if>
+      <if test="orderLockNum != null" >
+        orderLockNum,
+      </if>
+      <if test="payLockNum != null" >
+        payLockNum,
+      </if>
+      <if test="actvPreLockNum != null" >
+        actvPreLockNum,
+      </if>
+      <if test="actvOrderLockNum != null" >
+        actvOrderLockNum,
+      </if>
+      <if test="actvPayLockNum != null" >
+        actvPayLockNum,
+      </if>
+      <if test="orderTotalNum != null" >
+        orderTotalNum,
+      </if>
+      <if test="payTotalNum != null" >
+        payTotalNum,
+      </if>
+      <if test="exptDlvHours != null" >
+        exptDlvHours,
+      </if>
+      <if test="createTime != null" >
+        createTime,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="skuId != null" >
+        #{skuId,jdbcType=BIGINT},
+      </if>
+      <if test="stockSnapId != null" >
+        #{stockSnapId,jdbcType=BIGINT},
+      </if>
+      <if test="costPrice != null" >
+        #{costPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="stockNum != null" >
+        #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="orderLockNum != null" >
+        #{orderLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="payLockNum != null" >
+        #{payLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvPreLockNum != null" >
+        #{actvPreLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvOrderLockNum != null" >
+        #{actvOrderLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvPayLockNum != null" >
+        #{actvPayLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="orderTotalNum != null" >
+        #{orderTotalNum,jdbcType=INTEGER},
+      </if>
+      <if test="payTotalNum != null" >
+        #{payTotalNum,jdbcType=INTEGER},
+      </if>
+      <if test="exptDlvHours != null" >
+        #{exptDlvHours,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ninesale.valinor.item.provider.model.DtoItemStock" >
+    update t_item_stock
+    <set >
+      <if test="stockSnapId != null" >
+        stockSnapId = #{stockSnapId,jdbcType=BIGINT},
+      </if>
+      <if test="costPrice != null" >
+        costPrice = #{costPrice,jdbcType=INTEGER},
+      </if>
+      <if test="stockNum != null" >
+        stockNum = #{stockNum,jdbcType=INTEGER},
+      </if>
+      <if test="orderLockNum != null" >
+        orderLockNum = #{orderLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="payLockNum != null" >
+        payLockNum = #{payLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvPreLockNum != null" >
+        actvPreLockNum = #{actvPreLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvOrderLockNum != null" >
+        actvOrderLockNum = #{actvOrderLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="actvPayLockNum != null" >
+        actvPayLockNum = #{actvPayLockNum,jdbcType=INTEGER},
+      </if>
+      <if test="orderTotalNum != null" >
+        orderTotalNum = #{orderTotalNum,jdbcType=INTEGER},
+      </if>
+      <if test="payTotalNum != null" >
+        payTotalNum = #{payTotalNum,jdbcType=INTEGER},
+      </if>
+      <if test="exptDlvHours != null" >
+        exptDlvHours = #{exptDlvHours,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where skuId = #{skuId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ninesale.valinor.item.provider.model.DtoItemStock" >
+    update t_item_stock
+    set skuId = #{skuId,jdbcType=BIGINT},
+      stockSnapId = #{stockSnapId,jdbcType=BIGINT},
+      costPrice = #{costPrice,jdbcType=INTEGER},
+      stockNum = #{stockNum,jdbcType=INTEGER},
+      orderLockNum = #{orderLockNum,jdbcType=INTEGER},
+      payLockNum = #{payLockNum,jdbcType=INTEGER},
+      actvPreLockNum = #{actvPreLockNum,jdbcType=INTEGER},
+      actvOrderLockNum = #{actvOrderLockNum,jdbcType=INTEGER},
+      actvPayLockNum = #{actvPayLockNum,jdbcType=INTEGER},
+      orderTotalNum = #{orderTotalNum,jdbcType=INTEGER},
+      payTotalNum = #{payTotalNum,jdbcType=INTEGER},
+      exptDlvHours = #{exptDlvHours,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
